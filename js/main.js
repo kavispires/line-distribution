@@ -219,6 +219,13 @@ function updateProgress(){
     for(var n = 0; n < allMembers.length; n++){
       // Resize Bar on HTML
       var target = '.bar' + (n + 1);
+      // Animate
+      var unit = $('.progress').width() / 100;
+      var size = allMembers[n].percentage * unit
+      $(target).animate({
+        'width': size
+      }, 1000);
+      // Fix if it didn't work
       $(target).width(allMembers[n].percentage + '%');
     }
 }
