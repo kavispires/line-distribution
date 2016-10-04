@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "line-distribution";
+  src:url("line-distribution.eot");
+  src:url("line-distribution.eot?#iefix") format("embedded-opentype"),
+    url("line-distribution.woff") format("woff"),
+    url("line-distribution.ttf") format("truetype"),
+    url("line-distribution.svg#line-distribution") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "line-distribution" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "line-distribution" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-add:before {
+  content: "\62";
+}
+.icon-refresh:before {
+  content: "\65";
+}
+.icon-complete:before {
+  content: "\66";
+}
+.icon-trash:before {
+  content: "\69";
+}
+.icon-remove:before {
+  content: "\6a";
+}
+.icon-delete:before {
+  content: "\6b";
+}
+.icon-list:before {
+  content: "\6c";
+}
+.icon-edit:before {
+  content: "\63";
+}
+.icon-sets:before {
+  content: "\64";
+}

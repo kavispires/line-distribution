@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta id="format-detection" content="telephone=no" />
+    <meta id="msapplication-tap-highlight" content="no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <title>Line Distribuition</title>
+
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <link rel="icon" href="favicon.png">
+</head>
+<body>
+
+    <div class="container">
+        <div class="row header">
+            <ul class="menu">
+                <li class="menu-item" id="menu-create"><span class="icon-edit"></span><span class="menu-text"> Create</span></li>
+                <li class="menu-item" id="menu-sets"><span class="icon-sets"></span><span class="menu-text"> Sets</span></li>
+            </ul>
+        </div>
+        <div class="row row-set">
+            <ul class="sets">
+                <li class="set-tab active" id="nsbz">Nerdstreet Boyz [2]</li>
+                <li class="set-tab" id="kvs">KaViS [4]</li>
+                <li class="set-tab" id="ga">Girls Aloud [5]</li>
+                <li class="set-tab" id="gg">Girls' Generation [8]</li>
+                <li class="set-tab" id="twice">Twice [9]</li>
+                <li class="set-tab" id="sqz">Squirrel Zone [10]</li>
+                <li class="set-tab" id="superjunior">Super Junior [12]</li>
+                <li class="set-tab" id="kaliens">K-Aliens [15]</li>
+                <li class="set-tab" id="custom">Custom [?]</li>
+                
+            </ul>
+        </div>
+        <div class="row">
+            <div class="nav">
+                <button class="btn" type="button" id="reset"><span class="icon-refresh"></span> <span class="nav-text">Reset</span></button>
+                <button class="btn" type="button" id="remove"><span class="icon-trash"></span> <span class="nav-text">Remove Last</span></button>
+                <button class="btn" type="button" id="decrease"><span class="icon-remove"></span> <span class="nav-text">Decrease</span></button>
+                <button class="btn" type="button" id="finish"><span class="icon-complete"></span> <span class="nav-text">Finish</span></button>
+            </div>
+        <div class="row">
+            <h3 id="who">?</h3>
+            <div class="progress">
+              <div class="bar bar1"></div><div class="bar bar2"></div><div class="bar bar3"></div><div class="bar bar4"></div><div class="bar bar5"></div><div class="bar bar6"></div><div class="bar bar7"></div><div class="bar bar8"></div><div class="bar bar9"></div><div class="bar bar10"></div><div class="bar bar11"></div><div class="bar bar12"></div><div class="bar bar13"></div><div class="bar bar14"></div><div class="bar bar15"></div>
+            </div>
+        </div>
+        </div>
+        <div class="row flex-container boxes">
+            <div class="box box1">
+                <span class="box-key">1</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp1">0</span>
+            </div>
+            <div class="box box2">
+                <span class="box-key">2</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp2">0</span>
+            </div>
+            <div class="box box3">
+                <span class="box-key">3</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp3">0</span>
+            </div>
+            <div class="box box4">
+                <span class="box-key">4</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp4">0</span>
+            </div>
+            <div class="box box5">
+                <span class="box-key">5</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp5">0</span>
+            </div>
+            <div class="box box6">
+                <span class="box-key">6</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp6">0</span>
+            </div>
+            <div class="box box7">
+                <span class="box-key">7</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp7">0</span>
+            </div>
+            <div class="box box8">
+                <span class="box-key">8</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp8">0</span>
+            </div>
+            <div class="box box9">
+                <span class="box-key">9</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp9">0</span>
+            </div>
+            <div class="box box10">
+                <span class="box-key">10</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp10">0</span>
+            </div>
+            <div class="box box11">
+                <span class="box-key">11</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp11">0</span>
+            </div>
+            <div class="box box12">
+                <span class="box-key">12</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp12">0</span>
+            </div>
+            <div class="box box13">
+                <span class="box-key">13</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp13">0</span>
+            </div>
+            <div class="box box14">
+                <span class="box-key">14</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp14">0</span>
+            </div>
+            <div class="box box15">
+                <span class="box-key">15</span><br>
+                <span class="box-name"></span><br>
+                <span class="timestamp timestamp15">0</span>
+            </div>
+            <div class="results">
+                <div class="result result%VALUE%">
+                    <div class="result-bar">.</div>
+                    <div class="result-info"><span class="position">%VALUE%</span> <span class="name">%VALUE%</span> <span class="percentage">%VALUE%</span> <span class="timestamp">%VALUE%</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="log">
+            
+        </div>
+    </div>
+
+    <script src='js/vendor/jquery-2.1.4.min.js'></script>
+    <script src='js/vendor/jquery.mobile-1.4.5.min.js'></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
