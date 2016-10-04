@@ -368,14 +368,11 @@ var view = {
 
         var btn = "#decrease";
         // Toggle Class
-        $(btn).toggleClass('btn-danger-on');
+        $(btn).toggleClass('red');
         // Toggle decrease
         viewModel.toggleDecrease();
-        // Toggle Button test
-        btn = "#decrease .nav-text";
-        $(btn).text(function() {
-            return (decrease) ? 'Decrease ON' : 'Decrease';
-        });
+        // Toggle Button
+        $("#decrease .nav-text").text('Decrease');
     },
 
     updateProgress: function() {
@@ -436,6 +433,7 @@ var view = {
         var finish = viewModel.getFinish();
         var allMembers = viewModel.getAllMembers();
         var totalPercentage = viewModel.getTotalPercentage();
+        var $finishButton = $('#finish .nav-text');
         var i, targetTS, targetRank, number, per, perMax, relative;
         // Only if Finish is False
         if (!finish) {
@@ -515,6 +513,14 @@ var view = {
             // Hide Restuls Modal
             $('.results').hide('fast');
         }
+        // Update Finish Button
+        finish = viewModel.getFinish();
+        if(finish) {
+            $finishButton.text('Undo Finish');
+        } else {
+            $finishButton.text('Finish');
+        }
+
     },
 
     writeResultsModal: function() {
