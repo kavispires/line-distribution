@@ -1,10 +1,12 @@
-# line-distribution
+# Music Group Member Line Distribution
 
 This is a personal project based on many K-pop line distribution videos on youtube which shows how much each member of a group is singing.
 
+For a live version of this application, click [here](https://kavispires.github.io/line-distribution).
+
 ## How to Launch the Application
 
-Copy and open www/index.html.
+Download project and open www/index.html.
 
 ## How to Use the Application
 
