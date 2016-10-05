@@ -4,48 +4,8 @@ var model = {
 
     COLORS: ['red', 'blue', 'yellow', 'green', 'orange', 'pink', 'purple', 'black','cyan', 'violet', 'grey', 'navy', 'teal','forest','hotpink','blueviolet','brown',],
 
-    GROUPS: {
-        'none': {
-            'members': ['?'],
-            'colors': ['grey']
-        },
-        'nsbz': {
-            'members': ['Pat', 'Brian'],
-            'colors': ['red', 'blue']
-        },
-        'kvs': {
-            'members': ['Kyle', 'Anthony', 'Viktor', 'Seth'],
-            'colors': ['blue', 'red', 'yellow', 'green']
-        },
-        'ga': {
-            'members': ['Nadine', 'Cheryl', 'Kimberly', 'Sarah', 'Nicola'],
-            'colors': ['orange', 'red', 'pink', 'yellow', 'cyan']
-        },
-        'gg': {
-            'members': ['Taeyeon', 'Sunny', 'Tiffany', 'Hyoyeon', 'Yuri', 'Sooyong', 'Yonna', 'Seohyun'],
-            'colors': ['orange', 'purple', 'pink', 'green', 'red', 'cyan', 'yellow', 'teal']
-        },
-        'twice': {
-            'members': ['Nayeon', 'Jeongyeon', 'Momo', 'Sana', 'Jihyo', 'Mina', 'Dahyun', 'Chaeyoung', 'Tzuyu'],
-            'colors': ['orange', 'green', 'red', 'blue', 'purple', 'violet', 'pink', 'cyan', 'yellow'],
-        },
-        'sqz': {
-            'members': ['Leo', 'Bryan', '3J', 'Bobak', 'Zack', 'Nathan', 'JQ', 'Sypher', 'Nicky', 'Robbie'],
-            'colors': ['teal', 'violet', 'orange', 'red', 'navy', 'green', 'yellow', 'purple', 'pink', 'grey']
-        },
-        'superjunior': {
-            'members': ['Leeteuk', 'Heechul', 'Hankyung', 'Yesung', 'Kangin', 'Shindong', 'Sungmin', 'Eunhyuk', 'Donghae', 'Siwon', 'Ryeowook', 'Kyuhyun'],
-            'colors': ['yellow', 'orange', 'navy', 'red', 'violet', 'pink', 'purple', 'cyan', 'blue', 'teal', 'green', 'grey']
-        },
-        'kaliens': {
-          'members': ['Kalvin','Andy','Vincent','Sammy','Max','Leroy','Isaac','Sunny','Ike','Ethan','Gareth','Valentino','Alex','Shela','Drob'],
-          'colors': ['green','purple','blueviolet','yellow','hotpink','blue','red','orange','pink','teal','grey','forest','brown','cyan','black'],
-        },
-        'custom': {
-          'members': [],
-          'colors': []
-        }
-    },
+    GROUPS: [],
+    
     // Initial Information
 
     allMembers: [],
@@ -82,19 +42,27 @@ var Member = function(member, color) {
 
 var viewModel = {
     init: function() {
+        // Popualate GROUPS
+        model.GROUPS = DATABASE;
+        console.log(model.GROUPS);
         // Populate AllMembers
         this.populateAllMembers();
         // Assign Colors to Custom
-        model.GROUPS.custom.colors = this.shuffleArray(model.COLORS);
+        model.GROUPS[1].colors = this.shuffleArray(model.COLORS);
     },
 
     /**
      * @description Populates allMembers array with Member
      */
     populateAllMembers: function() {
-        var that = model.GROUPS[model.active];
-        for (var i = 0; i < that.members.length; i++) {
-            model.allMembers.push(new Member(that.members[i], that.colors[i]));
+        var group = $.grep(model.GROUPS, function(e) {
+            return e.id == model.active;
+        });
+        //var that = model.GROUPS[model.active];
+        console.log('that',group);
+        console.log(group[0].members.length);
+        for (var i = 0; i < group[0].members.length; i++) {
+            model.allMembers.push(new Member(group[0].members[i], group[0].colors[i]));
         }
     },
 
@@ -183,7 +151,7 @@ var viewModel = {
     },
 
     updateCustom: function(member) {
-        model.GROUPS.custom.members.push(member);
+        model.GROUPS[1].members.push(member);
     },
 
     updateCustomStatus: function(boolean) {
@@ -239,7 +207,20 @@ var view = {
         $('.results').hide();
         viewModel.init();
         viewModel.updateProgressWitdh($('.progress').width());
+        this.populateSetsMenu();
         this.populateBoxes();
+    },
+
+    populateSetsMenu: function() {
+        var $sets = $('.sets');
+        var groups = viewModel.getGroups();
+
+        $sets.html('');
+
+        for (var i = 1; i < groups.length; i++) {
+            $sets.append('<li class="set-tab" id="' + groups[i].id + '">' + groups[i].name + ' [' + groups[i].members.length + ']</li>');
+        }
+       
     },
 
     /**
@@ -248,7 +229,7 @@ var view = {
     populateBoxes: function() {
         var allMembers = viewModel.getAllMembers();
         var colors = viewModel.getColors();
-        var i;
+        var i, target, name, qt
 
         // Hide all boxes
         $('.box').hide();
@@ -258,8 +239,6 @@ var view = {
             $('.bar').removeClass(colors[i]);
         }
         // For each Member
-        var target;
-        var name;
         for (i = 0; i < allMembers.length; i++) {
             // Show Box
             target = '.box' + (i + 1);
@@ -279,8 +258,9 @@ var view = {
             $(target).addClass(allMembers[i].color);
         }
         // Add Size
-        $('.box').removeClass('box-sm box-md box-lg');
-        var qt = allMembers.length;
+        $('.box').removeClass('box-xs box-sm box-md box-lg');
+
+        qt = allMembers.length;
         if (qt <= 2 || qt === 4) {
             $('.box').addClass('box-lg');
         } else if (qt === 3 || qt >= 5 && qt <= 9) {
@@ -623,7 +603,10 @@ var view = {
 
 };
 
-view.init();
+$(document).ready(function(){
+    view.init();
+});
+
 
 /* ==========================================================================
    USER INPUT
@@ -643,7 +626,7 @@ $('#menu-sets').on('click', function() {
 });
 
 // Active Set Menu Item
-$('.set-tab').on('click', function() {
+$('.sets').on('click', '.set-tab', function() {
     // Hides Results if opened
     $('.results').hide('fast');
     // Toogle Sets Menu
@@ -705,7 +688,7 @@ $('.boxes *').bind('taphold', function(event, ui) {
 
 // TO-DO
 
-// Keyboard triggers
+/*// Keyboard triggers
 
 // TO-DO: It doesnt work properly
 window.onkeydown = function(e) {
@@ -730,3 +713,4 @@ window.onkeyup = function(e) {
   // Reset keyPress
   keyPress = null;
 };
+*/
