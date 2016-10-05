@@ -44,7 +44,6 @@ var viewModel = {
     init: function() {
         // Popualate GROUPS
         model.GROUPS = DATABASE;
-        console.log(model.GROUPS);
         // Populate AllMembers
         this.populateAllMembers();
         // Assign Colors to Custom
@@ -58,9 +57,6 @@ var viewModel = {
         var group = $.grep(model.GROUPS, function(e) {
             return e.id == model.active;
         });
-        //var that = model.GROUPS[model.active];
-        console.log('that',group);
-        console.log(group[0].members.length);
         for (var i = 0; i < group[0].members.length; i++) {
             model.allMembers.push(new Member(group[0].members[i], group[0].colors[i]));
         }
@@ -506,7 +502,6 @@ var view = {
     writeResultsModal: function() {
         var allMembers = viewModel.getAllMembers();
         var i, rankhtml, size;
-        console.log('Modal', allMembers);
 
         // Clear Results HTML
         $('.results').html('');
