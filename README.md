@@ -16,6 +16,7 @@ _A Custom Set is temporary and disappears as soon as you close or refresh the ap
 
 2. Play the song you want on your favorite music app.
 3. Click and hold the boxes as long as that particular singer is singing.
+4. The numbers (and sometimes letters, for more than 10 singers) on the white squares represent keys that may be pressed for the same effect of a mouse click.
 4. When you release the box, the progress bar will display how much that singer has sung, as well, how long he has sung, in seconds, in that box.
 5. When you are done, click the **Finish button (check mark symbol)** to display a window with the results in order and with final percentages.
 
@@ -27,6 +28,20 @@ Click to reset that particular line distribution. _This won't clear any custom s
 Click to remove the last computed time for the last box. 
 _Multiple clicks will remove more and more computed times._
 #### Decrease Button (minus symbol)
+_To be implemented._
 Click to toggle Decrease time instead of adding to the box/member you click next. It works only once. If you need to decrease more time from that box/member or another, you must click the Decrease button again.
 #### Finish Button (check mark symbol)
 Click to toggle the Rank window.
+
+## Tools and Libraries
+
+- [HTML5Boilerplate](https://html5boilerplate.com/)
+- [jQuery](https://jquery.com/)
+- [jQuery Mobile](https://jquerymobile.com/)
+- [Knockout.js](http://knockoutjs.com/)
+- [Fontastic](http://fontastic.me/)
+
+## TO-DO List
+
+- Decrease Button Functionality
+- Load localStorage to app

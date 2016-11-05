@@ -65,3 +65,9 @@
 .icon-sets:before {
   content: "\64";
 }
+.icon-paint:before {
+  content: "\61";
+}
+.icon-save:before {
+  content: "\67";
+}

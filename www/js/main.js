@@ -1,20 +1,16 @@
 var model = {
 
-    KEYS: [49, 50, 51, 52, 53, 54, 55, 56, 57], // key function not implemented
+    KEYSCODE: [49, 50, 51, 52, 53, 54, 55, 56, 57, 81, 87, 69, 82, 84],
 
-    COLORS: ['red', 'blue', 'yellow', 'green', 'orange', 'pink', 'purple', 'black','cyan', 'violet', 'grey', 'navy', 'teal','forest','hotpink','blueviolet','brown',],
+    KEYFACE: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Q", "W", "E", "R", "T"],
 
-    GROUPS: [],
+    COLORS: ['dirt', 'brown', 'orange', 'yellow', 'yellowgreen', 'green', 'forest', 'teal', 'cyan', 'navy', 'blue', 'violet', 'blueviolet', 'purple', 'pink', 'hotpink', 'red', 'grey', 'mediumgrey', 'black'],
     
     // Initial Information
 
-    allMembers: [],
-    lastMember: [],
-    log: '',
     result: '',
     decrease: false,
     finish: false,
-    totalPercentage: 0,
     keyPress: null,
     active: 'none',
     custom: false,
@@ -24,369 +20,375 @@ var model = {
 
 /**
  * @description Member Class
- * @param {string} member
+ * @param {string} name
  * @param {string} color
+ * @param {string} index
+ * @param {string} keycode
+ * @param {string} keyface
  */
-var Member = function(member, color) {
-    this.start = 0;
-    this.end = 0;
-    this.duration = [];
-    this.total = 0;
-    this.name = member;
-    this.color = color;
-    this.percentage = 0;
-    this.rank = 0;
-    this.finalpercentage = 0;
-    this.relativePercentage = 0;
+var Member = function(name, color, index, keycode, keyface) {
+    this.name = name;
+    this.color = ko.observable(color);
+    this.index = index;
+
+    this.keycode = keycode;
+    this.keyface = keyface;
+
+    this.boxStart = ko.observable(0);
+    this.boxEnd = ko.observable(0);
+    this.keyStart = ko.observable(0);
+    this.keyEnd = ko.observable(0);
+
+    this.duration = ko.observableArray([]);
+    this.total = ko.observable(0);
+    this.percentage = ko.observable(0);
 };
 
-var viewModel = {
-    init: function() {
-        // Popualate GROUPS
-        model.GROUPS = DATABASE;
-        // Populate AllMembers
-        this.populateAllMembers();
-        // Assign Colors to Custom
-        model.GROUPS[1].colors = this.shuffleArray(model.COLORS);
-    },
+var Result = function(data){
+    this.name = data.name;
+    this.color = data.color();
+    this.index = ko.observable(data.index);
+    this.total = data.total();
+    this.percentage = ko.observable(data.percentage());
+    this.rank = ko.observable(0);
+    this.finalpercentage = ko.observable(0);
+    this.relativePercentage = ko.observable(0); // relative to the longest member
+}
 
-    /**
-     * @description Populates allMembers array with Member
-     */
-    populateAllMembers: function() {
-        var group = $.grep(model.GROUPS, function(e) {
-            return e.id == model.active;
-        });
-        for (var i = 0; i < group[0].members.length; i++) {
-            model.allMembers.push(new Member(group[0].members[i], group[0].colors[i]));
-        }
-    },
-
-    shuffleArray: function(arr) {
-      var j, x, i;
-      var array = arr;
-      for (i = array.length; i; i--) {
-        j = Math.floor(Math.random() * i);
-        x = array[i - 1];
-        array[i - 1] = array[j];
-        array[j] = x;
-      }
-      return array;
-    },
-
-    getAllMembers: function() {
-        return model.allMembers;
-    },
-
-    getMember: function(m) {
-        return model.allMembers[m];
-    },
-
-    getLastMember: function() {
-        return model.lastMember;
-    },
-
-    getActive: function() {
-        return model.active;
-    },
-
-    getColors: function() {
-        return model.COLORS;
-    },
-
-    getDecrease: function() {
-        return model.decrease;
-    },
-
-    getFinish: function() {
-        return model.finish;
-    },
-
-    getTotalPercentage: function() {
-        return model.totalPercentage;
-    },
-
-    getCustomStatus: function() {
-        return model.custom;
-    },
-
-    getProgressWidth: function() {
-        return model.progressWidth;
-    },
-
-    getLog: function() {
-        return model.log;
-    },
-
-    getGroups: function() {
-        return model.GROUPS;
-    },
-
-    toggleDecrease: function() {
-        model.decrease = !model.decrease;
-    },
-
-    updateActive: function(group) {
-        model.active = group;
-    },
-
-    updateMemberPercentage: function(i, per) {
-        model.allMembers[i].percentage = per;
-    },
-
-    updateTotalPercentage: function(t) {
-        model.totalPercentage = t;
-    },
-
-    updateLastMember: function(member) {
-        model.lastMember.push(member);
-    },
-
-    updateFinish: function(boolean) {
-        model.finish = boolean;
-    },
-
-    updateCustom: function(member) {
-        model.GROUPS[1].members.push(member);
-    },
-
-    updateCustomStatus: function(boolean) {
-        model.custom = boolean;
-    },
-
-    updateProgressWitdh: function(width) {
-        model.progressWidth = width;
-    },
-
-    updateMemberTotal: function(i, t) {
-        model.allMembers[i].total = t;
-    },
-
-    updateAllMembersMemberRank: function(i,r,p,rp) {
-        model.allMembers[i].rank = r;
-        model.allMembers[i].finalpercentage = p;
-        model.allMembers[i].relativePercentage = rp;
-    },
-
-    updateLog: function(log) {
-        model.log = log;
-    },
-
-    clearAllMembers: function() {
-        model.allMembers = [];
-    },
-
-    clearCustomMembers: function() {
-        model.GROUPS.custom.members = [];
-    },
-
-    clearLastMember: function() {
-        model.lastMember = [];
-    },
-
-    removeLastMember: function(i) {
-        model.lastMember.pop();
-        model.allMembers[i].duration.pop();
-    },
-
-    decreaseLastFromMemberTotal: function(i, time) {
-        model.allMembers[i].total -= time;
-    }
+var Template = function(index, name, members, colors){
+    this.index = index;
+    this.name = name;
+    this.members = members;
+    this.colors = colors;
 };
 
-var view = {
-    /**
-     * @description Initiates App
-     */
-    init: function() {
-        $('.sets').hide();
-        $('.results').hide();
-        viewModel.init();
-        viewModel.updateProgressWitdh($('.progress').width());
-        this.populateSetsMenu();
-        this.populateBoxes();
-    },
+var ViewModel = function() {
+    var self = this;
 
-    populateSetsMenu: function() {
-        var $sets = $('.sets');
-        var groups = viewModel.getGroups();
+    /*  --------------
+        INITIATE APP FUNCTIONS
+        -------------- */
 
-        $sets.html('');
+    this.init = function() {
+        self.populateAvailableSets();
+        self.loadLocalStorage();
+    };
 
-        for (var i = 1; i < groups.length; i++) {
-            $sets.append('<li class="set-tab" id="' + groups[i].id + '">' + groups[i].name + ' [' + groups[i].members.length + ']</li>');
+    /*  --------------
+        OBSERVABLES
+        -------------- */
+
+    this.displaySets = ko.observable(false);
+    this.availableSets = ko.observableArray([]);
+    this.currentSet = ko.observable();
+    this.currentBand = ko.observableArray([]);
+    this.boxSize = ko.observable('box-md');
+    this.lastMember = ko.observableArray([]);
+    this.log = ko.observableArray([]);
+    this.currentSinger = ko.observable('Select a Preset or Create a new band.');
+    this.finish = ko.observable(false);
+    this.decrease = ko.observable(false);
+    this.log = ko.observableArray([]);
+    this.totalPercentage = ko.observable(0);
+
+    this.displayResults = ko.observable(false);
+    this.resultsArray = ko.observableArray([]);
+
+    this.allowedKeys = ko.observableArray([]);
+
+    this.customBands = ko.observableArray([]);
+    this.loadedBands = ko.observableArray([]);
+
+    this.progressBarWidth = $('.progress').width();
+
+    /*  --------------
+        RESET APP FUNCTIONS
+        -------------- */
+
+    this.reset = function() {
+        console.log('Resetting...');
+        // reset Members
+        for(var i = 0; i < self.currentBand().length; i++) {
+            var member = self.currentBand()[i];
+                member.duration([]);
+                member.total(0);
+                member.percentage(0);
         }
-       
-    },
+        // Log
+        self.log([]);
+        // currentSinger
+        self.currentSinger('?');
+        // lastMember
+        self.lastMember([]);
+        // totalPercentage
+        self.totalPercentage(0);
+        // finish
+        self.finish(false);
+        // progressBar
+        self.updateProgressBar();
+        // hide modal
+        self.displayResults(false);
+        // allowedKeys
+        self.populateAllowedKeys();
+    };
 
-    /**
-     * @description Shows and recolor boxes and progress bar in HTML
-     */
-    populateBoxes: function() {
-        var allMembers = viewModel.getAllMembers();
-        var colors = viewModel.getColors();
-        var i, target, name, qt
+    /*  --------------
+        LOAD LOCAL STORAGE 
+        -------------- */
 
-        // Hide all boxes
-        $('.box').hide();
-        // Remove all colors from bar
-        for (i = 0; i < colors.length; i++) {
-            $('.box').removeClass(colors[i]);
-            $('.bar').removeClass(colors[i]);
-        }
-        // For each Member
-        for (i = 0; i < allMembers.length; i++) {
-            // Show Box
-            target = '.box' + (i + 1);
-            $(target).show();
-            // Recolor boxes
-            $(target).addClass(allMembers[i].color);
-            // Write Name
-            target = '.box' + (i + 1) + ' .box-name';
-            name = allMembers[i].name;
-            // Trim name
-            if(name.length > 8){
-              name = name.replace(/ /g,'').slice(0,8);
+    this.loadLocalStorage = function() {
+        if (typeof(Storage) !== 'undefined') {
+            var localData = window.localStorage;
+            console.log(localData);
+            var parsedData = []
+            for(var i = 0; i < localData.length; i++) {
+                parsedData.push(localData.getItem("key"));
             }
-            $(target).text(name);
-            // Color Bars (in progress bar)
-            target = '.bar' + (i + 1);
-            $(target).addClass(allMembers[i].color);
+            console.log(parsedData);
+                //var cityNumber, locationNumber;
+                //for(var i = 0; i < localData.length - 1; i++) {
+                    //cityNumber = Number(localData.key(i)[0]);
+                    //locationNumber = Number(localData.key(i)[1]);
+                //}
+        } else {
+            alert('No browser Web Storage support. No data will be saved.');
         }
-        // Add Size
-        $('.box').removeClass('box-xs box-sm box-md box-lg');
 
-        qt = allMembers.length;
+    };
+
+    //window.localStorage.clear();
+
+    /*  --------------
+        TOP MENU FUNCTIONS 
+        -------------- */
+
+    this.createSet = function() {
+        console.log('Create Set');
+        self.setName('');
+        self.customMembers([]);
+        self.addColorToColorPickerPalette();
+        self.displaySetCreator(!self.displaySetCreator());
+    };
+
+    this.saveSet = function() {
+        console.log('Save Set');
+        // Gather self.customBands
+        var band = self.customBands();
+        var i, keyprefix, j, key;
+        console.log(band);
+        // Save items
+        for (i = 0; i < band.length; i++) {            
+            keyprefix = band[i].name;
+            keyprefix = keyprefix.replace(/\s/g,'');
+            keyprefix = keyprefix.toLowerCase();
+            // Save Set
+            window.localStorage.setItem('key', keyprefix);
+            window.localStorage.setItem(keyprefix, band[i].name);
+            for (j = 0; j < band[i].members.length; j++) {
+                key = keyprefix + 'member' + j;
+                console.log(key);
+                window.localStorage.setItem(key, band[i].members[j]);
+                key = keyprefix + 'color' + j;
+                console.log(key);
+                window.localStorage.setItem(key, band[i].colors[j]);
+            }
+        }
+    };
+
+    // Shows/Hides Set Menu
+    this.toggleSets = function() {
+        self.displaySets(!self.displaySets());
+        self.displaySetCreator(false);
+    };
+
+    // Populate availableSets() with database and localStorage
+    this.populateAvailableSets = function() {
+        // Clear availableSets();
+        self.availableSets([]);
+        // Iterate through DATABASE
+        for(var i = 0; i < DATABASE.length; i++){
+            // Push temp to availableSets
+            self.availableSets.push(DATABASE[i]);
+        }
+        // TODO: Load localStorage
+
+        for(var i = 0; i < self.customBands().length; i++){
+            // Push temp to availableSets
+            self.availableSets.push(self.customBands()[i]);
+        }
+        console.log(self.availableSets());
+    };
+
+    this.selectSet = function(data) {
+        // Hide Set Menu
+        self.displaySets(false);
+        // Update currentSet
+        self.currentSet(data);
+        // Reset app
+        self.reset();
+    };
+
+    /*  --------------
+        LINE DISTRUBUTION FUNCTIONALITY 
+        -------------- */
+
+    // Populates currentBand whenever currentSet is changed
+    this.currentSet.subscribe(function(data){
+        // Clear currentSet
+        self.currentBand([]);
+        // Loop through members
+        for(var i = 0; i < data.members.length; i++){
+            // Get keyboard key
+            var key = [model.KEYSCODE[i], model.KEYFACE[i]];
+            // Push new Member sending name, color and index information
+            self.currentBand.push( new Member(data.members[i], data.colors[i], i, key[0], key[1]));
+        }
+        self.updateBoxSize();
+        self.addClasses();
+        self.addColorsToProgressBar();
+    });
+
+    // Define size of boxes based on number of members
+    this.updateBoxSize = function() {
+        var qt = self.currentBand().length;
         if (qt <= 2 || qt === 4) {
-            $('.box').addClass('box-lg');
+            self.boxSize('box-lg');
         } else if (qt === 3 || qt >= 5 && qt <= 9) {
-            $('.box').addClass('box-md');
+            self.boxSize('box-md');
         } else if (qt >= 10 && qt <= 12){
-            $('.box').addClass('box-sm');
+            self.boxSize('box-sm');
         } else {
-            $('.box').addClass('box-xs');
+            self.boxSize('box-xs');
         }
-    },
+    };
 
-    reset: function() {
-        viewModel.clearAllMembers();
-        viewModel.clearLastMember();
-        viewModel.populateAllMembers();
-        viewModel.updateFinish(false);
-        this.populateBoxes();
+    // Add classes to boxes (unique class, size and color)
+    this.addClasses = function() {
+        var data = self.currentBand();
+        for(var i = 0; i < data.length; i++){
+            var classes = 'bar bar' + i + ' ' + data[i].color(); // e.g.: bar bar1
+            $('.bar' + i).removeClass().addClass(classes);
+        }
+    };
 
-        $('.timestamp').text(0);
-        $('.bar').width('0%');
-        $('#who').text('?');
-        $('.log').text('');
-        $('.results').hide('fast');
-    },
+    // Add classes to progressBar
+    this.addColorsToProgressBar = function() {
+        var data = self.currentBand();
+        for(var i = 0; i < data.length; i++){
+            var classes = 'box box' + i + ' ' + self.boxSize() + ' ' + data[i].color(); // e.g.: box box1 box-lg red
+            $('.box' + i).removeClass().addClass(classes);
+        }
+    };
 
-    /**
-     * @description Records Starting pressing time
-     * @param {number} m
-     */
-    recordStart: function(m) {
-        // Stop Scrit if Finish is true
-        var finish = viewModel.getFinish();
-        if (finish) return;
-
-        var member = viewModel.getMember(m);
-
-        // Record timestamp
-        member.start = Date.now();
+    // When a Box is clicked
+    this.recordStart = function(data, e) {
+        // Stop Script if finish() is true
+        if(self.finish()) return;
+        // Record start timestamp
+        data.boxStart(Date.now());
         // Update what member is singing
-        $('#who').text(member.name + ' is singing.');
-    },
-
-    /**
-     * @description Calculate Duraion based on Stopping pressing time
-     * @param {number} t
-     */
-    recordStop: function(m) {
-        var finish = viewModel.getFinish();
-        if (finish) return;
-        // Only proceed code if finish isn't clicked
-
-
-        var member = viewModel.getMember(m);
-        var decrease = viewModel.getDecrease();
-
-        // Stop timestamp
-        member.end = Date.now();
+        self.currentSinger(data.name + ' is singing.');
+    };
+    
+    // When a Box is released
+    this.recordStop = function(data) {
+        // Stop Script if finish() is true
+        if(self.finish()) return;
+        // Record end timestamp
+        data.boxEnd(Date.now());
         // Calculate duration
-        member.duration.push(Math.floor(((member.end - member.start) / 1000) * 100) / 100);
+        data.duration.push(Math.floor(((data.boxEnd() - data.boxStart()) / 1000) * 100) / 100);
         // if decrease is off
-        if (!decrease) {
-            // Update Total, adding
-            member.total += member.duration[member.duration.length - 1];
+        if (!self.decrease()) {
+            // Update Total, adding last item from duration array
+            data.total(data.total() + data.duration()[data.duration().length - 1]);
         } else {
-            // Update Total, decreasing
-            member.total -= member.duration[member.duration.length - 1];
-            if (member.total < 0) member.total = 0;
-            this.toggleDecreaseButton(decrease);
+            // Update Total, decreasing last item from duration array
+            data.total(data.total() - data.duration()[data.duration.length - 1]);
+            // Remove last item from duration array
+            data.duration.pop();
+            // If for any reasion total is less than 0
+            if (data.total() < 0) data.total(0);
+            // Turn off decrease
+            self.decrease(false);
         }
-        viewModel.updateMemberTotal(m, member.total);
-        // Write HTML
-        $('.timestamp' + (m + 1)).text(member.total);
+        // Fix 2 decimal only total
+        data.total(self.fixDecimals(data.total(), 2));
+
         // Update Progress Bar
-        this.updateProgress();
+        self.updateProgressBar();
         // Update LastMember
-        viewModel.updateLastMember(m);
+        self.lastMember.push(data);
         // Add to Log
-        $('.log').prepend('<span> | ' + member.name + '</span>');
-    },
+        self.log.unshift(data.name);
+        // Update what member is singing
+        self.currentSinger(data.name + ' was the last member to sing.');
+    };
 
-    toggleDecreaseButton: function(decrease) {
-        // Stop Scrit if Finish is true
-        var finish = viewModel.getFinish();
-        if (finish) return;
+    this.populateAllowedKeys = function() {
+        // Clear allowedKeys()
+        self.allowedKeys([]);
+        // Populate
+        for (var i = 0; i < self.currentBand().length; i++) {
+            self.allowedKeys.push(self.currentBand()[i].keycode);
+        }
+    };
 
-        var btn = "#decrease";
-        // Toggle Class
-        $(btn).toggleClass('red');
-        // Toggle decrease
-        viewModel.toggleDecrease();
-        // Toggle Button
-        $("#decrease .nav-text").text('Decrease');
-    },
+    this.removeLast = function() {
+        console.log('Removing last...');
+        // Stop Script if finish() is true
+        if(self.finish()) return;
 
-    updateProgress: function() {
-        var allMembers = viewModel.getAllMembers();
-        var progressWidth = viewModel.getProgressWidth();
+        var lastMember = self.lastMember();
+        // If lastMember is empty, stop function
+        if (lastMember.length === 0) return;
+        // Get Duration from lastMember and remove from total
+        var member = lastMember[lastMember.length - 1];
+        var decrease = member.duration()[member.duration().length - 1];
+        member.total(member.total() - decrease);
+        // Remove it from array
+        member.duration.pop();
+        // Remove from Log
+        self.log.shift();
+        // Clear last Member and from allMembers
+        self.lastMember.pop();
+        // Update Progress Bar
+        self.updateProgressBar();
+    };
 
-        // Calculate returns array with allTotals.length, and per
-        this.calculateTotals();
-        // Calculate fullTotal
-        for (var n = 0; n < allMembers.length; n++) {
+    this.toggleDecrease = function() {
+        alert('Functionality to be implemented.');
+    }
+
+    this.updateProgressBar = function() {
+        // Calculate totals
+        self.calculateTotals();
+        // Resize Bars
+        for (var n = 0; n < self.currentBand().length; n++) {
             // Resize Bar on HTML
-            var target = '.bar' + (n + 1);
+            var target = '.bar' + n;
             // Animate
-            var unit = progressWidth / 100;
-            var size = allMembers[n].percentage * unit;
+            var unit = self.progressBarWidth / 100;
+            var size = self.currentBand()[n].percentage() * unit;
             $(target).animate({
                 'width': size
             }, 500);
             // Fix if it didn't work
-            $(target).css('width', allMembers[n].percentage + 'px');
+            $(target).css('width', self.currentBand()[n].percentage() + 'px');
         }
-        // quick-fix
-        $('.bar13').css('width', '0.1%');
-    },
+    };
 
-    calculateTotals: function() {
-        var allMembers = viewModel.getAllMembers();
-
+    this.calculateTotals = function() {
         var allTotals = [];
         var total = 0;
         var percentages = [];
         var totalPercentage = 0;
         var per, i;
         //Populate allTotals
-        for (i = 0; i < allMembers.length; i++) {
-            allTotals.push(allMembers[i].total);
+        for (i = 0; i < self.currentBand().length; i++) {
+            allTotals.push(self.currentBand()[i].total());
         }
-        //Calculate total
+        //Calculate absolute total
         for (i = 0; i < allTotals.length; i++) {
             total += allTotals[i];
         }
@@ -396,316 +398,258 @@ var view = {
             per = 100 * allTotals[i] / total;
             if (isNaN(per)) per = 0;
             // Update Member's percentage
-            allMembers[i].percentage = per;
-            viewModel.updateMemberPercentage(i, per);
+            self.currentBand()[i].percentage(per);
             // Add per to totalPercentage
             totalPercentage += per;        
         }
+        // Update totalPercentage
+        self.fixDecimals(totalPercentage, 0);
+        self.totalPercentage(totalPercentage);
+    };
 
-        viewModel.updateTotalPercentage(totalPercentage);
-    },
+    this.finishDistribution = function() {
+        // Toggle finish()
+        self.finish(!self.finish());
 
-    finishDistribuition: function() {
-        var finish = viewModel.getFinish();
-        var allMembers = viewModel.getAllMembers();
-        var totalPercentage = viewModel.getTotalPercentage();
-        var $finishButton = $('#finish .nav-text');
-        var i, targetTS, targetRank, number, per, perMax, relative;
-        // Only if Finish is False
-        if (!finish) {
-            this.calculateTotals();
+        // If finish() is true
+        if(self.finish()) {
+            // Clear resultsArray()
+            self.resultsArray([]);
+            // Declare variables
+            var allPercentages = [];
+            var allTotals = [];
+            var i, per, highestPercentage;
 
-            var allMembersTotals = [];
-            var allMemmbersPercentages = [];
-
-            // Populate ranking array and percantage array
-            for (i = 0; i < allMembers.length; i++) {
-                allMembersTotals.push(allMembers[i].total);
-                per = (Math.floor((allMembers[i].percentage) * 10)) / 10;
-                allMemmbersPercentages.push(per);
+            // Populate results() and allPercentages
+            for (i = 0; i < self.currentBand().length; i++) {
+                self.resultsArray.push(new Result(self.currentBand()[i]));
+                allPercentages.push( self.currentBand()[i].percentage());
+                allTotals.push( self.currentBand()[i].total());
             }
 
-            // Save log temporarily
-            var log = $('.log').html();
-            viewModel.updateLog(log);
-            $('.log').text('');
-
-            // Get Ranking positions
-            var sorted = allMembersTotals.slice().sort(function(a, b) {
+            // Get Ranks
+            var sorted = allTotals.slice().sort(function(a, b) {
                 return b - a;
             });
-            var ranks = allMembersTotals.slice().map(function(v) {
+            var ranks = allTotals.slice().map(function(v) {
                 return sorted.indexOf(v) + 1;
             });
 
+            // Write Ranks
+            for (i = 0; i < self.resultsArray().length; i++) {
+                self.resultsArray()[i].rank(ranks[i]);
+            }
+
             // Calculate Highest Percentage
-            perMax = Math.max(...allMemmbersPercentages);
+            highestPercentage = Math.max(...allPercentages);
 
-            for (i = 0; i < allMembers.length; i++) {
-                
-                per = (Math.floor((allMembers[i].percentage) * 10)) / 10;
-
-                // Write Results on Boxes
-                number = i + 1;
-                targetTS = '.timestamp' + number;
-                targetRank = '.box' + number + ' .box-key';
+            // Calculate Relative Percentage
+            for (i = 0; i < self.resultsArray().length; i++) {
+                per = (Math.floor((self.resultsArray()[i].percentage()) * 10)) / 10;
                 if (per > 0) {
-                    $(targetRank).text(ranks[i]);
-                    $(targetTS).text('[' + per + '%]');
-                } else {
-                    $(targetRank).text('-');
-                    $(targetTS).text('-');
+                    // Calculate Relative Percentage
+                    relativePercentage = (100 * per) / highestPercentage;
+                    relativePercentage = self.fixDecimals(relativePercentage, 0);
+                    // Push Relative percentage
+                    self.resultsArray()[i].relativePercentage(relativePercentage);
+                    // Push percentage
+                    per = self.fixDecimals(per, 1);
+                    self.resultsArray()[i].percentage(per);
                 }
+            }
+            // Rearrange resultsArray
+            self.resultsArray.sort(function (a, b) {
+                return parseFloat(a.rank()) - parseFloat(b.rank());
+            });
 
-                // Calculate Relative Percentage
-                relative = (100 * per) / perMax;
-
-
-                // Populate final Member Rank to object
-                viewModel.updateAllMembersMemberRank(i,ranks[i],per,relative);
+            // All Colors to result bars
+            for(i = 0; i < self.resultsArray().length; i++){
+                // Change index
+                self.resultsArray()[i].index(i);
+                // Add index classes
+                var classes = 'result result' + i; // e.g.: result result1
+                $('.result' + i).removeClass().addClass(classes);
+                // Add color classes
+                classes = 'result-bar ' + self.resultsArray()[i].color;
+                $('.result' + i + ' .result-bar').removeClass().addClass(classes);
             }
 
-            $('.results').show('fast');
-            this.writeResultsModal();
-
-            // Write totalPercentage on #who
-            $('#who').text('TOTAL: ' + totalPercentage + '%');
-            // Change Finish
-            viewModel.updateFinish(true);
-        } else {
-            view.populateBoxes();
-            // Show Seconds instead of percentages
-            for (i = 0; i < allMembers.length; i++) {
-                number = i + 1;
-                targetTS = '.timestamp' + number;
-                targetRank = '.box' + number + ' .box-key';
-                $(targetTS).text(allMembers[i].total);
-                $(targetRank).text(number);
+            // Update result bar Sizes
+            for (i = 0; i < self.resultsArray().length; i++) {
+                var target = '.result' + i + ' .result-bar';
+                // Animate
+                var size = self.resultsArray()[i].relativePercentage() + '%';
+                $(target).animate({
+                    'width': size
+                }, 500);
+                // Fix if it didn't work
+                $(target).css('width', self.resultsArray()[i].relativePercentage() + '%');
             }
-            viewModel.updateFinish(false);
-            // Rewrite log
-            var log = viewModel.getLog();
-            $('.log').html(log); 
-            // Hide Restuls Modal
-            $('.results').hide('fast');
-        }
-        // Update Finish Button
-        finish = viewModel.getFinish();
-        if(finish) {
-            $finishButton.text('Undo Finish');
+            // Show Modal
+            self.displayResults(true);
         } else {
-            $finishButton.text('Finish');
+            // Hide Modal
+            self.displayResults(false);
         }
+    };
 
-    },
-
-    writeResultsModal: function() {
-        var allMembers = viewModel.getAllMembers();
-        var i, rankhtml, size;
-
-        // Clear Results HTML
-        $('.results').html('');
-
-        // Sort all members
-        allMembers.sort(function (a, b) {
-            return parseFloat(a.rank) - parseFloat(b.rank);
-        });
-
-        for (i = 0; i < allMembers.length; i++) {
-            rankhtml = '<div class="result result' + (i + 1) +'">';
-            rankhtml += '<div class="result-bar ' + allMembers[i].color + '">.</div><div class="result-info">';
-            rankhtml += '<span class="position">#' + allMembers[i].rank + '</span> ';
-            rankhtml += '<span class="name">' + allMembers[i].name + '</span> ';
-            rankhtml += '<span class="percentage">[' + allMembers[i].finalpercentage + '%]</span> ';
-            rankhtml += '<span class="timestamp">[' + allMembers[i].total + 's]</span></div></div>';
-
-            // Write on HTML
-            $('.results').append(rankhtml);
-
-            size = allMembers[i].relativePercentage + '%';
-            //Resize Color bar
-            $('.result' + (i + 1) + ' .result-bar').animate({
-                'width': size
-            }, 2000);
-        }
-
-    },
-
-    removeLast: function() {
-        // Stop Scrit if Finish is true
-        var finish = viewModel.getFinish();
-        if (finish) return;
-
-        var lastMember = viewModel.getLastMember();
-        var allMembers = viewModel.getAllMembers();
-
-        // If lastMember is empty, stop function
-        if (lastMember.length === 0) return;
-        // Get Duration from lastMember and remove from total
-        var lm = lastMember[lastMember.length - 1];
-        var member = allMembers[lm];
-        var decrease = member.duration[member.duration.length - 1];
-        
-        member.total -= decrease;
-        viewModel.decreaseLastFromMemberTotal(lm, decrease);
-        // Remove it from array
-        member.duration.pop();
-        // Write HTML
-        $('.timestamp' + (lm + 1)).text(member.total);
-        // Remove last span in log
-        $('.log').find(':first-child').remove();
-        // Clear last Member and from allMembers
-        viewModel.removeLastMember(lm);
-        // Update Progress Bar
-        this.updateProgress();
-    },
-
-    customize: function() {
-      var custom = viewModel.getCustomStatus();
-      var allMembers = viewModel.getAllMembers();
-
-      // Hide modal if its exposed
-      $('.results').hide();
-
-      // First Time
-      if (!custom){
-        viewModel.updateCustomStatus(true);
-        viewModel.updateActive('custom');
-        viewModel.clearAllMembers();
-        this.addMember();  
-      // Other Times
-      } else {
-        if(allMembers.length < 15){
-          this.addMember();
-        } else {
-          var remove = confirm("Your custom band has the maximum 12 members. Restart?");
-          if(remove){
-            viewModel.clearAllMembers();
-            viewModel.clearCustomMembers();
-            allMembers = viewModel.getAllMembers();
-            this.addMember();  
-          }
-        }
-      }
-    },
-
-    addMember: function() {
-      var add = prompt("Add Member:", "Member name (max. 8 characters)");
-      viewModel.updateCustom(add);
-      view.populateBoxes();
-      view.reset();
+    this.closeResults = function() {
+        // Hide Modal
+        self.displayResults(false);
+        // Unfinish
+        self.finish(false);
     }
 
-};
+    // Fix 2 decimal only total
+    this.fixDecimals = function(num, decimals) {
+        if(decimals == undefined) decimals = 2;
+        return Number(num.toFixed(decimals));
+    };
 
+    this.getData = function(i) {
+        return self.currentBand()[i];
+    }
+
+    /*  --------------
+    KEYPRESS 
+    -------------- */
+
+    this.permission = true;
+
+    $(window).on('keydown', function(e){
+        if (event.repeat != undefined) {
+            self.permission = !event.repeat;
+        }
+        if (!self.permission) return;
+        self.permission = false;
+        // Assign target
+        var i = self.allowedKeys().indexOf(e.keyCode);
+        // If key is not allowed, stop code
+        if (i === -1) return;
+        var data = self.getData(i);
+        self.recordStart(data);  
+    });
+
+    $(window).on('keyup', function(e){
+        // Assign target
+        var i = self.allowedKeys().indexOf(e.keyCode);
+        // If key is not allowed, stop code
+        if (i === -1) return;
+        var data = self.getData(i);
+        self.recordStop(data);
+        self.permission = true;
+    });
+
+    /*  --------------
+    CREATOR
+    -------------- */
+
+    this.displaySetCreator = ko.observable(false);
+    this.colorPickerPalette = ko.observableArray();
+    this.customMembers = ko.observableArray([]);
+    this.setName = ko.observable();
+    this.memberName = ko.observable();
+    this.memberColor = ko.observable();
+    this.memberColorSelection = ko.observable();
+    this.numberOfCustomMembers = ko.observable(0);
+
+    this.addColorToColorPickerPalette = function(){
+        self.colorPickerPalette([]);
+        for(var i = 0; i < model.COLORS.length; i++) {
+            this.colorPickerPalette.push(model.COLORS[i]);
+        }
+        // All Colors to color picker
+        for(var i = 0; i < self.colorPickerPalette().length; i++){
+            // Add index classes
+            var classes = 'colorpickerbox picker' + i + ' ' + self.colorPickerPalette()[i]; // e.g.: colorpickerbox picker1 red
+            $('#picker' + i).removeClass().addClass(classes);
+        }
+    }
+
+    this.selectCustomColor = function(data) {
+        self.memberColor(data);
+        $('.colorpickerbox').removeClass('color-selected');
+        var index = model.COLORS.indexOf(data);
+        $('.picker' + index).addClass('color-selected');
+    }
+
+    this.addCustomMember = function(data) {
+        if(self.customMembers().length === 15) {
+            alert('Maximum Number of Members. Confirm set or remove members.');
+            return;
+        }
+        // If missing Member Name, add numbered name
+        if(!self.memberName()) {
+            var number = self.customMembers().length + 1;
+            self.memberName('Member ' +  number);
+        }
+        // If missing Color, select random color
+        if(!self.memberColor()) {
+            var color = self.colorPickerPalette()[0];
+            self.memberColor(color);
+        }
+        // Remove Color from options
+        var colorToRemove = self.colorPickerPalette().indexOf(self.memberColor());
+        self.colorPickerPalette().splice(colorToRemove, 1);
+        // Add Member to customMembers
+        var index = self.customMembers().length;
+        //Member = function(name, color, index, keycode, keyface);
+        self.customMembers.push( new Member(self.memberName(), self.memberColor(), index, model.KEYSCODE[index], model.KEYFACE[index]));
+        // Clear memberName and memberColor
+        self.memberName('');
+        self.memberColor('');
+        $('.colorpickerbox').removeClass('color-selected');
+        // update color picker boxes
+        self.colorPickerPalette.valueHasMutated();
+    }
+
+    this.customMembers.subscribe(function(){
+        self.numberOfCustomMembers(self.customMembers().length);
+    });
+
+    this.removeCustomMember = function(data) {
+        self.customMembers.splice(data.index, 1);
+
+    }
+
+    this.confirmSet = function() {
+        // If there's no name
+        if(!self.setName()) {
+            alert("You must define a set name");
+            return;
+        }
+        // If there's no members
+        if(self.customMembers().length == 0) {
+            alert("You need at least one member in the set");
+            return;
+        }
+        // Build Set
+        var index = DATABASE.length; //it wont be database in the future
+        var name = self.setName();
+        var members = [];
+        var colors = [];
+        for (var i = 0; i < self.customMembers().length; i++){
+            members.push(self.customMembers()[i].name);
+            colors.push(self.customMembers()[i].color());
+        }
+
+        self.customBands.push( new Template(index, name, members, colors));
+
+        self.populateAvailableSets();
+
+        self.selectSet(self.availableSets[self.availableSets().length - 1]);
+        // Hide creator
+        self.displaySetCreator(false);
+    }
+
+    /*  --------------
+    CALL INIT()
+    -------------- */
+
+    self.init();
+}
+
+// Apply Bindings to View
 $(document).ready(function(){
-    view.init();
+    ko.applyBindings(new ViewModel());
 });
-
-
-/* ==========================================================================
-   USER INPUT
-   ========================================================================== */
-
-// TOP MENU: CREATE
-
-$('#menu-create').on('click', function(){
-    view.customize();
-});
-
-// TOP MENU: SETS
-
-// Toogles Sets Menu
-$('#menu-sets').on('click', function() {
-    $('.sets').slideToggle("slow");
-});
-
-// Active Set Menu Item
-$('.sets').on('click', '.set-tab', function() {
-    // Hides Results if opened
-    $('.results').hide('fast');
-    // Toogle Sets Menu
-    $('.sets').slideToggle("slow");
-    // Remove active from all set-tab elements
-    $('.set-tab').removeClass('active');
-    // Add active class
-    $(this).addClass('active');
-    // Get href
-    viewModel.updateActive($(this).attr('id'));
-    // Reset Members
-    view.reset();
-});
-
-// APP NAVIGATION
-
-$('#reset').on('click', function() {
-    view.reset();
-});
-
-$('#remove').on('click', function() {
-    view.removeLast();
-});
-
-$('#decrease').on('click', function() {
-    view.toggleDecreaseButton(decrease);
-});
-
-$('#finish').on('click', function() {
-    view.finishDistribuition();
-});
-
-// MEMBER BUTTONS
-
-/**
- * @description Activate mousedown, runs recordStart, active mouseup, runs recordStop
- */
-$('.box').on('vmousedown', function() {
-    var target = parseInt($(this).attr('class').match(/\d+/)[0]) - 1;
-    view.recordStart(target);
-}).on('vmouseup', function() {
-    var target = parseInt($(this).attr('class').match(/\d+/)[0]) - 1;
-    view.recordStop(target);
-}).bind('taphold', function(e) {
-    e.preventDefault();
-    return false;
-});
-
-
-$('.boxes *').bind('taphold', function(event, ui) {
-    event.preventDefault();
-});
-
-
-
-
-
-
-
-// TO-DO
-
-/*// Keyboard triggers
-
-// TO-DO: It doesnt work properly
-window.onkeydown = function(e) {
-  // Assign target
-  var target = KEYS.indexOf(e.keyCode);
-  // Stop if target is not found
-  if (target === -1) return;
-  // If target is within allMembers length
-  if (target < allMembers.length - 1) {
-    recordStart(target);
-    keyPress = e.keyCode;
-  }
-};
-
-// TO-DO: It doesnt work properly
-window.onkeyup = function(e) {
-  // If key up is different than previous key down, stop
-  if (e.keyCode !== keyPress) return;
-  // Assign target
-  var target = KEYS.indexOf(e.keyCode);
-  recordStop(target);
-  // Reset keyPress
-  keyPress = null;
-};
-*/

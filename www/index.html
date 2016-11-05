@@ -21,129 +21,84 @@
     <div class="container">
         <div class="row header">
             <ul class="menu">
-                <li class="menu-item" id="menu-create"><span class="icon-edit"></span><span class="menu-text"> Create</span></li>
-                <li class="menu-item" id="menu-sets"><span class="icon-sets"></span><span class="menu-text"> Sets</span></li>
+                <li class="menu-item" data-bind="click: createSet"><span class="icon-edit"></span><span class="menu-text"> Create</span></li>
+                <li class="menu-item" data-bind="click: saveSet"><span class="icon-save"></span><span class="menu-text"> Save</span></li>
+                <li class="menu-item" data-bind="click: toggleSets"><span class="icon-sets"></span><span class="menu-text"> Presets</span></li>
             </ul>
         </div>
-        <div class="row row-set">
-            <ul class="sets">
-                <li class="set-tab" id="nerdstreet">Nerdstreet Boyz [2]</li>
-                <li class="set-tab" id="kavis">KaViS [4]</li>
-                <li class="set-tab" id="girlsaloud">Girls Aloud [5]</li>
-                <li class="set-tab" id="girlsgeneration">Girls' Generation [8]</li>
-                <li class="set-tab" id="twice">Twice [9]</li>
-                <li class="set-tab" id="sqz">Squirrel Zone [10]</li>
-                <li class="set-tab" id="superjunior">Super Junior [12]</li>
-                <li class="set-tab" id="kaliens">K-Aliens [15]</li>
-                <li class="set-tab" id="custom">Custom [?]</li>
+        <div class="row row-set" data-bind="visible: displaySets">
+            <ul class="sets" data-bind="foreach: availableSets">
+                <li class="set-tab" data-bind="click: $parent.selectSet"><span data-bind="text: name"></span> [<span data-bind="text: members.length"></span>]</li>
                 
             </ul>
         </div>
+
+        <div class="row">
+            <div class="creator" data-bind="visible: displaySetCreator">
+                <h2>Custom Set</h2>
+                <input class="creator-textfield" type="text" name="setname" placeholder="Define Set Name" maxlength="15" data-bind="textInput: setName">
+                <hr>
+                <input class="creator-textfield" type="text" name="membername" placeholder="Add Member Name" maxlength="10" data-bind="textInput: memberName">
+                <p>Pick Member Color:</p>
+                <div class="colorpicker" data-bind="foreach: colorPickerPalette">
+                    <div class="colorpickerbox" data-bind="attr: {'id': 'picker' + $index()}, click: $parent.selectCustomColor"></div>
+                </div>
+                <button class="btn" type="button" data-bind="click: addCustomMember">Add Member</button>
+                <hr>
+                <h3>Members (<span data-bind="text: numberOfCustomMembers"></span> of 15)</h3>
+                <p class="text-details">(To delete any member, just click on the name)</p>
+                <div class="membersList" data-bind="foreach: customMembers">
+                    <button class="mini-btn" type="button" data-bind="text: name, click: $parent.removeCustomMember, attr: {'class': 'mini-btn ' + color()}"></button>
+                </div>
+                <hr>
+                <button class="btn" type="button" data-bind="click: confirmSet">Confirm Set</button>
+            </div>    
+        </div>
+
         <div class="row">
             <div class="nav">
-                <button class="btn" type="button" id="reset"><span class="icon-refresh"></span> <span class="nav-text">Reset</span></button>
-                <button class="btn" type="button" id="remove"><span class="icon-trash"></span> <span class="nav-text">Remove Last</span></button>
-                <button class="btn" type="button" id="decrease"><span class="icon-remove"></span> <span class="nav-text">Decrease</span></button>
-                <button class="btn" type="button" id="finish"><span class="icon-complete"></span> <span class="nav-text">Finish</span></button>
+                <button class="btn" type="button" data-bind="click: reset"><span class="icon-refresh"></span> <span class="nav-text">Reset</span></button>
+                <button class="btn" type="button" data-bind="click: removeLast"><span class="icon-trash"></span> <span class="nav-text">Remove Last</span></button>
+                <button class="btn" type="button" data-bind="click: toggleDecrease"><span class="icon-remove"></span> <span class="nav-text">Decrease</span></button>
+                <button class="btn" type="button" data-bind="click: finishDistribution"><span class="icon-complete"></span> <span class="nav-text">Finish</span></button>
             </div>
         <div class="row">
-            <h3 id="who">?</h3>
-            <div class="progress">
-              <div class="bar bar1"></div><div class="bar bar2"></div><div class="bar bar3"></div><div class="bar bar4"></div><div class="bar bar5"></div><div class="bar bar6"></div><div class="bar bar7"></div><div class="bar bar8"></div><div class="bar bar9"></div><div class="bar bar10"></div><div class="bar bar11"></div><div class="bar bar12"></div><div class="bar bar13"></div><div class="bar bar14"></div><div class="bar bar15"></div>
+            <h3 id="who" data-bind="text: currentSinger"></h3>
+            <div class="progress" data-bind="foreach: currentBand">
+                <div class="bar" data-bind="attr: {'class': 'bar' + index}"></div>
             </div>
         </div>
         </div>
-        <div class="row flex-container boxes">
-            <div class="box box1">
-                <span class="box-key">1</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp1">0</span>
+        <div class="row flex-container boxes" data-bind="foreach: currentBand">
+            <div class="box" data-bind="event: { mousedown: $parent.recordStart, mouseup: $parent.recordStop }, attr: {'class': 'box' + index}">
+                <span class="box-key" data-bind="text: keyface"></span><br>
+                <span class="box-name" data-bind="text: name"></span><br>
+                <span class="timestamp" data-bind="text: total"></span>
             </div>
-            <div class="box box2">
-                <span class="box-key">2</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp2">0</span>
-            </div>
-            <div class="box box3">
-                <span class="box-key">3</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp3">0</span>
-            </div>
-            <div class="box box4">
-                <span class="box-key">4</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp4">0</span>
-            </div>
-            <div class="box box5">
-                <span class="box-key">5</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp5">0</span>
-            </div>
-            <div class="box box6">
-                <span class="box-key">6</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp6">0</span>
-            </div>
-            <div class="box box7">
-                <span class="box-key">7</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp7">0</span>
-            </div>
-            <div class="box box8">
-                <span class="box-key">8</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp8">0</span>
-            </div>
-            <div class="box box9">
-                <span class="box-key">9</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp9">0</span>
-            </div>
-            <div class="box box10">
-                <span class="box-key">10</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp10">0</span>
-            </div>
-            <div class="box box11">
-                <span class="box-key">11</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp11">0</span>
-            </div>
-            <div class="box box12">
-                <span class="box-key">12</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp12">0</span>
-            </div>
-            <div class="box box13">
-                <span class="box-key">13</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp13">0</span>
-            </div>
-            <div class="box box14">
-                <span class="box-key">14</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp14">0</span>
-            </div>
-            <div class="box box15">
-                <span class="box-key">15</span><br>
-                <span class="box-name"></span><br>
-                <span class="timestamp timestamp15">0</span>
-            </div>
-            <div class="results">
-                <div class="result result%VALUE%">
+        </div>
+
+        <div class="row">
+            <div class="results" data-bind="visible: displayResults">
+                <h3>Results</h3>
+                <!--ko foreach: resultsArray-->
+                <div class="result" data-bind="attr: {'class': 'result' + index()}">
                     <div class="result-bar">.</div>
-                    <div class="result-info"><span class="position">%VALUE%</span> <span class="name">%VALUE%</span> <span class="percentage">%VALUE%</span> <span class="timestamp">%VALUE%</span></div>
+                    <div class="result-info">#<span class="position" data-bind="text: rank">?</span> <span class="name" data-bind="text: name">?</span> [ <span class="percentage" data-bind="text: percentage">?</span>% ] [ <span class="timestamp" data-bind="text: total">?</span>s ]</div>
                 </div>
+                <!--/ko-->
+                <button class="btn" type="button" data-bind="click: closeResults">Close</button>
             </div>
         </div>
-        <div class="log">
-            
+
+        <div class="log" data-bind="foreach: log">
+            <span data-bind="text: $data + ' | '"></span>
         </div>
     </div>
 
-    <script src='js/vendor/jquery-2.1.4.min.js'></script>
-    <script src='js/vendor/jquery.mobile-1.4.5.min.js'></script>
-    <script src='js/database.js'></script>
+    <script src="js/vendor/jquery-2.1.4.min.js"></script>
+    <script src="js/vendor/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/vendor/knockout-3.4.0.js"></script>
+    <script src="js/database.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
