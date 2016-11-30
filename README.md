@@ -6,7 +6,7 @@ For a live version of this application, click [here](https://kavispires.github.i
 
 ## How to Launch the Application
 
-Download project and open www/index.html.
+Download project and open ```www/index.html```.
 
 ## How to Use the Application
 
