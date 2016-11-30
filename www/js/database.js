@@ -38,8 +38,8 @@ var DATABASE = [
         {
         	'index': 6,
 			'name' : 'Super Junior',
-            'members': ['Leeteuk', 'Heechul', 'Hankyung', 'Yesung', 'Kangin', 'Shindong', 'Sungmin', 'Eunhyuk', 'Donghae', 'Siwon', 'Ryeowook', 'Kyuhyun'],
-            'colors': ['yellow', 'orange', 'navy', 'red', 'violet', 'pink', 'purple', 'cyan', 'blue', 'teal', 'green', 'grey']
+            'members': ['Leeteuk', 'Heechul', 'Yesung', 'Kangin', 'Shindong', 'Sungmin', 'Eunhyuk', 'Donghae', 'Siwon', 'Ryeowook', 'Kyuhyun'],
+            'colors': ['yellow', 'orange', 'red', 'violet', 'pink', 'purple', 'cyan', 'blue', 'teal', 'green', 'grey']
         },
         {
         	'index': 7,
