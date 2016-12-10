@@ -50,7 +50,6 @@ textarea {
   padding: 0.2em 0;
 }
 
-}
 html {
   box-sizing: border-box;
 }
@@ -164,7 +163,6 @@ a {
   position: absolute;
   width: calc(100vw - 20px);
   z-index: 1000;
-  /*display: none;*/
 }
 
 .set-tab {
@@ -194,6 +192,10 @@ a {
 
 .btn:hover {
   background: #DED5E0 !important;
+}
+
+.btn.on {
+  border: 2px solid #d01131;
 }
 
 .flex-container {
@@ -272,6 +274,14 @@ a {
 .bar13 {
   width: 1px;
 }
+
+.log {
+  max-width: 96%;
+  max-height: 32px;
+  overflow-y: auto;
+  margin: 0 auto;
+}
+
 /* ==========================================================================
    Result Modal
    ========================================================================== */
