@@ -43,5 +43,4 @@ Click to toggle the Rank window.
 
 ## TO-DO List
 
-- Decrease Button Functionality
-- Load localStorage to app
+- Load localStorage to app OR something similar
