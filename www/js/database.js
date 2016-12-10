@@ -8,8 +8,8 @@ var DATABASE = [
         {
         	'index': 1,
         	'name' : 'KaViS',
-            'members': ['Kyle', 'Anthony', 'Viktor', 'Seth'],
-            'colors': ['blue', 'red', 'yellow', 'green']
+            'members': ['Kyle', 'Anthony', 'Ira', 'Viktor', 'Seth'],
+            'colors': ['blue', 'red', 'violet','yellow', 'green']
         },
         {
         	'index': 2,
