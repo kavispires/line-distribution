@@ -277,7 +277,11 @@ var ViewModel = function() {
         // Record start timestamp
         data.boxStart(Date.now());
         // Update what member is singing
-        self.currentSinger(data.name + ' is singing.');
+        if (!self.decrease()) {
+            self.currentSinger(data.name + ' is singing.');
+        } else {
+            self.currentSinger(data.name + ' is having time decreased.');
+        }
     };
     
     // When a Box is released
@@ -292,27 +296,34 @@ var ViewModel = function() {
         if (!self.decrease()) {
             // Update Total, adding last item from duration array
             data.total(data.total() + data.duration()[data.duration().length - 1]);
+            // Update what member is singing
+            self.currentSinger(data.name + ' was the last member to sing.');
         } else {
             // Update Total, decreasing last item from duration array
-            data.total(data.total() - data.duration()[data.duration.length - 1]);
+            data.total(data.total() - data.duration()[data.duration().length - 1]);
             // Remove last item from duration array
             data.duration.pop();
             // If for any reason total is less than 0
-            if (data.total() < 0 || isNan(data.total())) data.total(0);
-            // Turn off decrease
-            self.toggleDecrease();
+            if (data.total() < 0 || isNaN(data.total())) data.total(0);
+            // Update what member is singing
+            self.currentSinger('Time was decreased from ' + data.name + '.');
         }
         // Fix 2 decimal only total
         data.total(self.fixDecimals(data.total(), 2));
-
         // Update Progress Bar
         self.updateProgressBar();
-        // Update LastMember
-        self.lastMember.push(data);
         // Add to Log
         self.log.unshift(data.name);
-        // Update what member is singing
-        self.currentSinger(data.name + ' was the last member to sing.');
+        // If this was a decrease:
+        if (self.decrease()) {
+            // Add line-through
+            $('.log span:first-child').addClass('log-decreased');
+            // Turn off decrease if on
+            self.toggleDecrease();
+        } else {
+            // Update LastMember
+            self.lastMember.push(data);
+        }
     };
 
     this.populateAllowedKeys = function() {
