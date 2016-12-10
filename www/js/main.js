@@ -6,16 +6,6 @@ var model = {
 
     COLORS: ['dirt', 'brown', 'orange', 'yellow', 'yellowgreen', 'green', 'forest', 'teal', 'cyan', 'navy', 'blue', 'violet', 'blueviolet', 'purple', 'pink', 'hotpink', 'red', 'grey', 'mediumgrey', 'black'],
     
-    // Initial Information
-
-    result: '',
-    decrease: false,
-    finish: false,
-    keyPress: null,
-    active: 'none',
-    custom: false,
-    progressWidth: 0,
-
 };
 
 /**
@@ -307,10 +297,10 @@ var ViewModel = function() {
             data.total(data.total() - data.duration()[data.duration.length - 1]);
             // Remove last item from duration array
             data.duration.pop();
-            // If for any reasion total is less than 0
-            if (data.total() < 0) data.total(0);
+            // If for any reason total is less than 0
+            if (data.total() < 0 || isNan(data.total())) data.total(0);
             // Turn off decrease
-            self.decrease(false);
+            self.toggleDecrease();
         }
         // Fix 2 decimal only total
         data.total(self.fixDecimals(data.total(), 2));
@@ -357,7 +347,8 @@ var ViewModel = function() {
     };
 
     this.toggleDecrease = function() {
-        alert('Functionality to be implemented.');
+        $('#decrease').toggleClass('on');
+        self.decrease(!self.decrease());
     }
 
     this.updateProgressBar = function() {
@@ -589,8 +580,8 @@ var ViewModel = function() {
             self.memberColor(color);
         }
         // Remove Color from options
-        var colorToRemove = self.colorPickerPalette().indexOf(self.memberColor());
-        self.colorPickerPalette().splice(colorToRemove, 1);
+        var colorToHide = self.colorPickerPalette().indexOf(self.memberColor());
+        $('.picker' + colorToHide).hide();
         // Add Member to customMembers
         var index = self.customMembers().length;
         //Member = function(name, color, index, keycode, keyface);
@@ -609,7 +600,13 @@ var ViewModel = function() {
 
     this.removeCustomMember = function(data) {
         self.customMembers.splice(data.index, 1);
-
+        //TO-DO: Add color back to colorPickerPallete
+        console.log(data);
+        //self.colorPickerPalette.push(color);
+        // Update colorPickerPalette
+        var colorToShow = self.colorPickerPalette().indexOf(data.color());
+        console.log(colorToShow);
+        $('.picker' + colorToShow).show();
     }
 
     this.confirmSet = function() {
