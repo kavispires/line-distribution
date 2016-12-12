@@ -161,28 +161,25 @@ var ViewModel = function() {
     };
 
     this.saveSet = function() {
-        console.log('Save Set');
+        console.log('Saving Sets...');
         // Gather self.customBands
         var band = self.customBands();
-        var i, keyprefix, j, key;
+        var i, j, savefile;
         console.log(band);
         // Save items
-        for (i = 0; i < band.length; i++) {            
-            keyprefix = band[i].name;
-            keyprefix = keyprefix.replace(/\s/g,'_');
-            keyprefix = keyprefix.toLowerCase();
-            // Save Set
-            window.localStorage.setItem('key', keyprefix);
-            window.localStorage.setItem(keyprefix, band[i].name);
+        for (i = 0; i < band.length; i++) {
+            // Add Band Name          
+            savefile = '&&' + band[i].name;
+            // For each item in the band
             for (j = 0; j < band[i].members.length; j++) {
-                key = keyprefix + 'member' + j;
-                console.log(key);
-                window.localStorage.setItem(key, band[i].members[j]);
-                key = keyprefix + 'color' + j;
-                console.log(key);
-                window.localStorage.setItem(key, band[i].colors[j]);
+                savefile += '&&' + band[i].members[j];
+                savefile += '&&' + band[i].colors[j];
             }
+            // Save string
+            window.localStorage.setItem('linedistribution', savefile);
         }
+        // TO-DO: Rerun loadSets
+        // TO-DO: Clear custom bands
     };
 
     // Shows/Hides Set Menu
@@ -632,7 +629,7 @@ var ViewModel = function() {
             return;
         }
         // Build Set
-        var index = DATABASE.length + self.customBands().length; //it wont be database in the future
+        var index = DATABASE.length + self.customBands().length;
         var name = self.setName();
         var members = [];
         var colors = [];
