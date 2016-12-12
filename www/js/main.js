@@ -60,8 +60,8 @@ var ViewModel = function() {
         -------------- */
 
     this.init = function() {
-        self.populateAvailableSets();
         self.loadLocalStorage();
+        self.populateAvailableSets();
     };
 
     /*  --------------
@@ -169,7 +169,7 @@ var ViewModel = function() {
         // Save items
         for (i = 0; i < band.length; i++) {            
             keyprefix = band[i].name;
-            keyprefix = keyprefix.replace(/\s/g,'');
+            keyprefix = keyprefix.replace(/\s/g,'_');
             keyprefix = keyprefix.toLowerCase();
             // Save Set
             window.localStorage.setItem('key', keyprefix);
@@ -632,7 +632,7 @@ var ViewModel = function() {
             return;
         }
         // Build Set
-        var index = DATABASE.length; //it wont be database in the future
+        var index = DATABASE.length + self.customBands().length; //it wont be database in the future
         var name = self.setName();
         var members = [];
         var colors = [];
