@@ -175,8 +175,9 @@ var ViewModel = function() {
                 savefile += '&&' + band[i].members[j];
                 savefile += '&&' + band[i].colors[j];
             }
-            // Save string
+            // Save string '&&name&&member&&color&&member&&color...'
             window.localStorage.setItem('linedistribution', savefile);
+            console.log(savefile);
         }
         // TO-DO: Rerun loadSets
         // TO-DO: Clear custom bands
@@ -584,7 +585,7 @@ var ViewModel = function() {
         }
         // If missing Color, select random color
         if(!self.memberColor()) {
-            var color = self.colorPickerPalette()[0];
+            var color = self.colorPickerPalette()[self.customMembers().length];
             self.memberColor(color);
         }
         // Remove Color from options
