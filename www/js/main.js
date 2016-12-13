@@ -132,13 +132,15 @@ var ViewModel = function() {
         if (typeof(Storage) !== 'undefined') {
             console.log('Loading LocalStorage...');
             var localData = window.localStorage.getItem('linedistribution');
-            if (localData == null) return;
-            var index, index1, index2, index3;
-            console.log(localData);
+            // Stop code if no localStorage was previously saved.
+            if (localData == null) {
+                console.log('Nothing to load.');
+                return;
+            }
+            var index, index1, index2;
             var loadMembers = function(newBand) {
                 // If localData Code for band '&b&' is not the first thing in string and it has a member '&m&'
                 if (localData.indexOf('&b&') != 0 && localData.indexOf('&m&') != -1) {
-                    console.log(localData);
                     // Remove '&m&'
                     localData = localData.substring(3, localData.length);
                     // Push member to members
@@ -150,7 +152,6 @@ var ViewModel = function() {
                     // Find index of next element
                     index1 = localData.indexOf('&m&');
                     index2 = localData.indexOf('&b&');
-                    console.log('INDEXES:', index1, '&', index2);
                     if (index1 != -1 && index2 != -1 && index1 < index2) {
                         index = index1;
                     } else if (index1 != -1 && index2 != -1 && index1 > index2) {
@@ -160,12 +161,10 @@ var ViewModel = function() {
                     } else {
                         index = localData.length;
                     }
-                    console.log('FINAL INDEX', index);
                     newBand.colors.push(localData.substring(0, index));
                     localData = localData.substring(index, localData.length);
-                    console.log('Member:', newBand.members[newBand.members.length - 1], '(', newBand.colors[newBand.colors.length - 1],')');
+                    console.log('Adding Member:', newBand.members[newBand.members.length - 1], '(', newBand.colors[newBand.colors.length - 1],')');
                     // Run loadMembers again
-                    console.log('E vai?', localData.indexOf('&b&'));
                     loadMembers(newBand);
                 } else {
                     console.log('Members have been loaded.');
@@ -247,11 +246,11 @@ var ViewModel = function() {
         }
         // Save string '&&name&&member&&color&&member&&color...'
         window.localStorage.setItem('linedistribution', savefile);
-        console.log(savefile);
         // Rerun loadSets
         self.loadLocalStorage();
         // Clear custom bands
         self.customBands([]);
+        console.log('Save complete!');
     };
 
     // Shows/Hides Set Menu
@@ -279,7 +278,6 @@ var ViewModel = function() {
             // Push temp to availableSets
             self.availableSets.push(self.customBands()[i]);
         }
-        console.log(self.availableSets());
     };
 
     this.selectSet = function(data) {
@@ -641,7 +639,6 @@ var ViewModel = function() {
             var classes = 'colorpickerbox picker' + i + ' ' + self.colorPickerPalette()[i]; // e.g.: colorpickerbox picker1 red
             $('#picker' + i).removeClass().addClass(classes);
         }
-        console.log(self.availableColors);
     }
 
     this.selectCustomColor = function(data) {
@@ -670,7 +667,6 @@ var ViewModel = function() {
         var colorToHide = self.colorPickerPalette().indexOf(self.memberColor());
         $('.picker' + colorToHide).hide();
         // Remove Color from available
-        console.log(self.availableColors.indexOf(self.memberColor()));
         self.availableColors.splice(self.availableColors.indexOf(self.memberColor()), 1);
 
         // Add Member to customMembers
