@@ -106,12 +106,13 @@
         </div>
 
         <div class="row alert" data-bind="visible: displayAlert">
-            <div class="alert-inside">
-                <h1>Alert</h1>
+            <div class="alert-content">
+                <h2>Alert</h2>
                 <hr>
-                <h3></h3>
+                <h3 data-bind="text: alertMessage"></h3>
                 <div class="alert-nav">
-                    <button class="btn" type="button" data-bind="">OK</button> <button class="btn" type="button" data-bind=""></button> <button class="btn" type="button" data-bind=""></button>
+                    <button class="btn" type="button" data-bind="visible: displayAlertNavOk, click: alertOK">OK</button>
+                    <button class="btn" type="button" data-bind="visible: displayAlertNavOpt">Cancel</button> <button class="btn" type="button" data-bind="visible: displayAlertNavOpt">Confirm</button>
                 </div>
             </div>
         </div>

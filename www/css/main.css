@@ -126,7 +126,6 @@ body {
   width: 100%;
   flex: 1 1 auto;
   align-items: flex-start;
-  outline: red 1px solid;
 }
 
 a {
@@ -310,6 +309,38 @@ a {
   font-style: italic;
   color: #95001E;
   text-decoration: line-through;
+}
+
+/* ==========================================================================
+   Alerts Modal
+   ========================================================================== */
+
+.alert {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 3000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert-content {
+  border-radius: 5px;
+  padding: 10px;
+  width: 80%;
+  background: #E7E7E7;
+}
+
+.alert-content h2 {
+  margin-top: 10px;
+}
+
+.alert-nav {
+  margin: 20px 0;
 }
 
 /* ==========================================================================
@@ -680,6 +711,10 @@ a {
   .creator .text-details {
     margin: 0;
     font-size: 60%;
+  }
+
+  .alert-nav .btn {
+    width: 40%;
   }
 }
 

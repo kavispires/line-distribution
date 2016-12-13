@@ -212,7 +212,8 @@ var ViewModel = function() {
             // Run loadBand for the first time
             loadBand();
         } else {
-            alert('No browser Web Storage support. No data will be saved.');
+            self.alert('alert', 'No browser Web Storage support. No save features will be available.');
+            //alert('No browser Web Storage support. No save features will be available.');
         }
     };
 
@@ -258,7 +259,7 @@ var ViewModel = function() {
         self.displaySets(false);
         // Check if there's anything to be saved
         if (self.customBands().length === 0 && self.changesToBeSaved() == false) {
-            alert("Nothing to save. Create a custom Band before saving it.");
+            self.alert('alert', "Nothing to save. Create a custom Band before saving it.");
             return;
         }
         console.log('Saving Sets...');
@@ -290,8 +291,7 @@ var ViewModel = function() {
         self.customBands([]);
         // Unallow Save
         self.changesToBeSaved(false);
-        console.log('Save complete!');
-        alert('Save complete!');
+        self.alert('alert', 'Save complete!');
     };
 
     // Shows/Hides Set Menu
@@ -696,7 +696,7 @@ var ViewModel = function() {
 
     this.addCustomMember = function(data) {
         if(self.customMembers().length === 15) {
-            alert('Maximum Number of Members. Confirm set or remove members.');
+            self.alert('alert', 'Maximum Number of Members. Confirm set or remove members.');
             return;
         }
         // If missing Member Name, add numbered name
@@ -745,12 +745,12 @@ var ViewModel = function() {
     this.confirmSet = function() {
         // If there's no name
         if(!self.setName()) {
-            alert("You must define a set name");
+            self.alert('alert', "You must define a set name");
             return;
         }
         // If there's no members
         if(self.customMembers().length === 0) {
-            alert("You need at least one member in the set");
+            self.alert('alert', "You need at least one member in the set");
             return;
         }
         // If this is Set Edit, remove it from loadedBands first
@@ -826,15 +826,30 @@ var ViewModel = function() {
 
     this.closeEdit = function() {
         self.displaySetEditor(false);
+        self.displayHome(true);
     }
 
     /*  --------------
         ALERT MODAL 
         -------------- */
 
-    this.displayAlert = ko.observable(true);
+    this.displayAlert = ko.observable(false);
+    this.alertMessage = ko.observable('');
+    this.displayAlertNavOk = ko.observable(false);
+    this.displayAlertNavOpt = ko.observable(false);
 
-    
+    this.alert = function(type, msg) {
+        self.displayAlert(true);
+        if(type == 'alert') {
+            self.alertMessage(msg);
+            self.displayAlertNavOk(true);
+        }
+        // return true or false; if type warn=true
+    }
+
+    this.alertOK = function() {
+        self.displayAlert(false);
+    }
 
     /*  --------------
     CALL INIT()
