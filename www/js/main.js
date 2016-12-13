@@ -275,6 +275,7 @@ var ViewModel = function() {
         // Unallow Save
         self.changesToBeSaved(false);
         console.log('Save complete!');
+        alert('Save complete!');
     };
 
     // Shows/Hides Set Menu
