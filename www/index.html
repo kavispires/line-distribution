@@ -10,7 +10,6 @@
 
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" href="css/normalize.min.css">
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="css/main.css">
 
@@ -19,7 +18,7 @@
 <body>
 
     <div class="container">
-        <div class="row header">
+        <div class="header">
             <ul class="menu">
                 <li class="menu-item" data-bind="click: createSet"><span class="icon-paint"></span><span class="menu-text"> Create</span></li>
                 <li class="menu-item" data-bind="click: editSets"><span class="icon-edit"></span><span class="menu-text"> Edit Sets</span></li>
@@ -27,47 +26,44 @@
                 <li class="menu-item" data-bind="click: toggleSets"><span class="icon-sets"></span><span class="menu-text"> Presets</span></li>
             </ul>
         </div>
-        <div class="row row-set" data-bind="visible: displaySets">
+        <div class="row-set" data-bind="visible: displaySets">
             <ul class="sets" data-bind="foreach: availableSets">
                 <li class="set-tab" data-bind="click: $parent.selectSet"><span data-bind="text: name"></span> [<span data-bind="text: members.length"></span>]</li>         
             </ul>
         </div>
 
-        <div class="row">
-            <div class="creator" data-bind="visible: displaySetCreator">
-                <h2>Custom Sets</h2>
-                <input class="creator-textfield" type="text" name="setname" placeholder="Define Set Name" maxlength="15" data-bind="textInput: setName">
-                <hr>
-                <input class="creator-textfield" type="text" name="membername" placeholder="Add Member Name" maxlength="10" data-bind="textInput: memberName">
-                <p>Pick Member Color:</p>
-                <div class="colorpicker" data-bind="foreach: colorPickerPalette">
-                    <div class="colorpickerbox" data-bind="attr: {'id': 'picker' + $index()}, click: $parent.selectCustomColor"></div>
-                </div>
-                <button class="btn" type="button" data-bind="click: addCustomMember">Add Member</button>
-                <hr>
-                <h3>Members (<span data-bind="text: numberOfCustomMembers"></span> of 15)</h3>
-                <p class="text-details">(To delete any member, just click on the name)</p>
-                <div class="membersList" data-bind="foreach: customMembers">
-                    <button class="mini-btn" type="button" data-bind="text: name, click: $parent.removeCustomMember, attr: {'class': 'mini-btn ' + color()}"></button>
-                </div>
-                <hr>
-                <button class="btn" type="button" data-bind="click: confirmSet">Confirm Set</button>
-            </div>    
+        <div class="row creator" data-bind="visible: displaySetCreator">
+            <h2>Custom Sets</h2>
+            <input class="creator-textfield" type="text" name="setname" placeholder="Define Set Name" maxlength="15" data-bind="textInput: setName">
+            <hr>
+            <input class="creator-textfield" type="text" name="membername" placeholder="Add Member Name" maxlength="10" data-bind="textInput: memberName">
+            <p>Pick Member Color:</p>
+            <div class="colorpicker" data-bind="foreach: colorPickerPalette">
+                <div class="colorpickerbox" data-bind="attr: {'id': 'picker' + $index()}, click: $parent.selectCustomColor"></div>
+            </div>
+            <button class="btn" type="button" data-bind="click: addCustomMember">Add Member</button>
+            <hr>
+            <h3>Members (<span data-bind="text: numberOfCustomMembers"></span> of 15)</h3>
+            <p class="text-details">(To delete any member, just click on the name)</p>
+            <div class="membersList" data-bind="foreach: customMembers">
+                <button class="mini-btn" type="button" data-bind="text: name, click: $parent.removeCustomMember, attr: {'class': 'mini-btn ' + color()}"></button>
+            </div>
+            <hr>
+            <button class="btn" type="button" data-bind="click: confirmSet">Confirm Set</button>   
         </div>
 
-        <div class="row">
-            <div class="editor" data-bind="visible: displaySetEditor">
-                <h2>Custom Sets List</h2>
-                <ul class="ed-custom-sets" data-bind="foreach: loadedBands">
-                    <li class="clearfix">
-                    <div class="ed-text"><span class="ed-band-name" data-bind="text: $data.name"></span> (<span data-bind="text: $data.members.length"></span> members) </div><div class="ed-nav"><button class="btn" type="button" data-bind="click: $parent.editCustomBand"><span class="icon-paint"><span class="mobile-text"> Edit</span></button><button class="btn" type="button" data-bind="click: $parent.deleteCustomBand"><span class="icon-trash"></span><span class="mobile-text"> Delete</span></button></div></li>
-                </ul>
-                <hr>
-                <button class="btn" type="button" data-bind="click: closeEdit">Close Edit</button>
-            </div>    
+        <div class="row editor" data-bind="visible: displaySetEditor">
+            <h2>Custom Sets List</h2>
+            <ul class="ed-custom-sets" data-bind="foreach: loadedBands">
+                <li class="clearfix">
+                <div class="ed-text"><span class="ed-band-name" data-bind="text: $data.name"></span> (<span data-bind="text: $data.members.length"></span> members) </div><div class="ed-nav"><button class="btn" type="button" data-bind="click: $parent.editCustomBand"><span class="icon-paint"><span class="mobile-text"> Edit</span></button><button class="btn" type="button" data-bind="click: $parent.deleteCustomBand"><span class="icon-trash"></span><span class="mobile-text"> Delete</span></button></div></li>
+            </ul>
+            <hr>
+            <button class="btn" type="button" data-bind="click: closeEdit">Close Edit</button>  
         </div>
 
         <div class="row main" data-bind="visible: displayMain">
+            <h2 data-bind="text: currentBandName"></h2>
             <div class="nav">
                 <button class="btn" type="button" data-bind="click: reset"><span class="icon-refresh"></span> <span class="mobile-text">Reset</span></button>
                 <button class="btn" type="button" data-bind="click: removeLast"><span class="icon-trash"></span> <span class="mobile-text">Remove Last</span></button>
@@ -102,8 +98,22 @@
             </div>
         </div><!-- /row -->
 
-        <div class="row" data-bind="visible: displayIndex">
-            <h1>Line Distribution</h1>
+        <div class="row home" data-bind="visible: displayHome">
+            <img class="logo" src="img/line-distribution-logo.svg">
+            <div class="loading-log">
+                <h3>Select a Preset or Create a new band.</h3>
+            </div>
+        </div>
+
+        <div class="row alert" data-bind="visible: displayAlert">
+            <div class="alert-inside">
+                <h1>Alert</h1>
+                <hr>
+                <h3></h3>
+                <div class="alert-nav">
+                    <button class="btn" type="button" data-bind="">OK</button> <button class="btn" type="button" data-bind=""></button> <button class="btn" type="button" data-bind=""></button>
+                </div>
+            </div>
         </div>
     </div><!-- /container -->
 

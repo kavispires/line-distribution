@@ -70,11 +70,13 @@ var ViewModel = function() {
 
     this.appCanBeInitiated = false;
     
-    this.displayIndex = ko.observable(true);
+    this.displayHome = ko.observable(true);
+
     this.displayMain = ko.observable(false);
     this.displaySets = ko.observable(false);
     this.availableSets = ko.observableArray([]);
     this.currentSet = ko.observable();
+    this.currentBandName = ko.observable('');
     this.currentBand = ko.observableArray([]);
     this.boxSize = ko.observable('box-md');
     this.lastMember = ko.observableArray([]);
@@ -222,10 +224,10 @@ var ViewModel = function() {
         active == 'displayMain' ? self.displayMain(true) : self.displayMain(false);
         active == 'displaySetCreator' ? self.displaySetCreator(true) : self.displaySetCreator(false);
         active == 'displaySetEditor' ? self.displaySetEditor(true) : self.displaySetEditor(false);
-        active == 'displayIndex' ? self.displayIndex(true) : self.displayIndex(false);
+        active == 'displayHome' ? self.displayHome(true) : self.displayHome(false);
         // TO-DO: Hide Modals
 
-        if(active == undefined) self.displayIndex(true);
+        if(active == undefined) self.displayHome(true);
     }
 
     /*  --------------
@@ -313,6 +315,7 @@ var ViewModel = function() {
             self.availableSets.push(self.loadedBands()[i]);
         }
 
+        // Iterate through unsaved customBands
         for(i = 0; i < self.customBands().length; i++){
             // Push temp to availableSets
             self.availableSets.push(self.customBands()[i]);
@@ -334,6 +337,8 @@ var ViewModel = function() {
 
     // Populates currentBand whenever currentSet is changed
     this.currentSet.subscribe(function(data){
+        // Update current band name
+        self.currentBandName(data.name);
         // Clear currentSet
         self.currentBand([]);
         // Loop through members
@@ -772,7 +777,7 @@ var ViewModel = function() {
 
         self.selectSet(self.availableSets[self.availableSets().length - 1]);
         // Hide creator
-        self.displaySetCreator(false);
+        self.toggleWindow();
     };
 
     /*  --------------
@@ -822,6 +827,14 @@ var ViewModel = function() {
     this.closeEdit = function() {
         self.displaySetEditor(false);
     }
+
+    /*  --------------
+        ALERT MODAL 
+        -------------- */
+
+    this.displayAlert = ko.observable(true);
+
+    
 
     /*  --------------
     CALL INIT()
