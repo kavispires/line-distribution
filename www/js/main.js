@@ -90,6 +90,7 @@ var ViewModel = function() {
 
     this.customBands = ko.observableArray([]);
     this.loadedBands = ko.observableArray([]);
+    this.changesToBeSaved = ko.observable(false);
 
     this.progressBarWidth = $('.progress').width();
 
@@ -138,6 +139,8 @@ var ViewModel = function() {
                 return;
             }
             var index, index1, index2;
+            // Clear loadedBands
+            self.loadedBands([]);
             var loadMembers = function(newBand) {
                 // If localData Code for band '&b&' is not the first thing in string and it has a member '&m&'
                 if (localData.indexOf('&b&') !== 0 && localData.indexOf('&m&') != -1) {
@@ -219,21 +222,40 @@ var ViewModel = function() {
         self.customMembers([]);
         self.addColorToColorPickerPalette();
         self.displaySetCreator(!self.displaySetCreator());
+        self.displaySetEditor(false);
+        self.displaySets(false);
     };
 
+    this.editSets = function() {
+        console.log('Edit Sets');
+        if (self.customBands().length > 0) {
+            var confirmEdit = confirm("Sets will be saved before continuing.");
+        }
+        if (confirmEdit) self.saveSet();
+        self.displaySetEditor(!self.displaySetEditor());
+        self.displaySetCreator(false);
+        self.displaySets(false);
+    }
+
     this.saveSet = function() {
-        if (self.customBands().length === 0) {
+        // Close sets if opened
+        self.displaySets(false);
+        // Check if there's anything to be saved
+        if (self.customBands().length === 0 && self.changesToBeSaved() == false) {
             alert("Nothing to save. Create a custom Band before saving it.");
             return;
         }
         console.log('Saving Sets...');
+        var i, j, k;
         // Gather self.customBands
         var band = self.customBands();
-        var loadData = window.localStorage.getItem('linedistribution');
+        // Add loadedBands to band
+        for (k = 0; k < self.loadedBands().length; k++) {
+            band.push(self.loadedBands()[k]);
+        }
         var savefile = '';
-        var i, j;
         // Get previously linedistribution saved file, if any
-        if (loadData !== null && loadData !== undefined) savefile = loadData;
+        //if (loadData !== null && loadData !== undefined) savefile = loadData;
         // Save items
         for (i = 0; i < band.length; i++) {
             // Add Band Name          
@@ -250,6 +272,8 @@ var ViewModel = function() {
         self.loadLocalStorage();
         // Clear custom bands
         self.customBands([]);
+        // Unallow Save
+        self.changesToBeSaved(false);
         console.log('Save complete!');
     };
 
@@ -257,6 +281,7 @@ var ViewModel = function() {
     this.toggleSets = function() {
         self.displaySets(!self.displaySets());
         self.displaySetCreator(false);
+        self.displaySetEditor(false);
     };
 
     // Populate availableSets() with database and localStorage
@@ -627,6 +652,7 @@ var ViewModel = function() {
     this.memberColor = ko.observable();
     this.memberColorSelection = ko.observable();
     this.numberOfCustomMembers = ko.observable(0);
+    this.confirmEdit = ko.observable('');
 
     this.addColorToColorPickerPalette = function(){
         var i;
@@ -670,7 +696,6 @@ var ViewModel = function() {
         $('.picker' + colorToHide).hide();
         // Remove Color from available
         self.availableColors.splice(self.availableColors.indexOf(self.memberColor()), 1);
-
         // Add Member to customMembers
         var index = self.customMembers().length;
         //Member = function(name, color, index, keycode, keyface);
@@ -710,8 +735,16 @@ var ViewModel = function() {
             alert("You need at least one member in the set");
             return;
         }
+        // If this is Set Edit, remove it from loadedBands first
+        if (self.confirmEdit().length > 0) {
+            var remainingBands = $.grep(self.loadedBands(), function(e){ 
+                return e.name != self.confirmEdit(); 
+            });
+            self.loadedBands(remainingBands);
+            self.confirmEdit('');
+        }
         // Build Set
-        var index = DATABASE.length + self.customBands().length;
+        var index = DATABASE.length + self.loadedBands().length + self.customBands().length;
         var name = self.setName();
         var members = [];
         var colors = [];
@@ -728,6 +761,54 @@ var ViewModel = function() {
         // Hide creator
         self.displaySetCreator(false);
     };
+
+    /*  --------------
+    EDITOR
+    -------------- */
+
+    this.displaySetEditor = ko.observable(false);
+
+    this.editCustomBand = function(data) {
+        console.log('Edit Set');
+        // Close editor
+        self.displaySetEditor(false);
+        // Clear customMembers
+        self.customMembers([]);
+        // Build color palette
+        self.addColorToColorPickerPalette();
+        // Set Name
+        self.setName(data.name);
+        // Set member colored buttons
+        for (var i = 0; i < data.members.length; i++) {
+            // Add member
+            self.customMembers.push( new Member(data.members[i], data.colors[i], i, model.KEYSCODE[i], model.KEYFACE[i]));
+            // Hide Color from palette and for available observable
+            var colorToHide = self.colorPickerPalette().indexOf(data.colors[i]);
+            $('.picker' + colorToHide).hide();
+            self.availableColors.splice(self.availableColors.indexOf(data.colors[i]), 1);
+        }
+        // 
+        self.confirmEdit(data.name);
+        // Open creator
+        self.displaySetCreator(true);
+    };
+
+    this.deleteCustomBand = function(data) {
+        var areYouSure = confirm('Are you sure you want to delete ' + data.name + ' custom band?');
+        if(areYouSure) {
+            // Remove Band
+            var remainingBands = $.grep(self.loadedBands(), function(e){ 
+                return e.name != data.name; 
+            });
+            self.loadedBands(remainingBands);
+            // Allow save
+            self.changesToBeSaved(true);
+        }
+    };
+
+    this.closeEdit = function() {
+        self.displaySetEditor(false);
+    }
 
     /*  --------------
     CALL INIT()

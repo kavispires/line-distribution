@@ -356,7 +356,8 @@ a {
    Creator
    ========================================================================== */
 
-.creator {
+.creator,
+.editor {
   width: 96%;
   margin: 10px auto;
   background: #fff;
@@ -418,6 +419,30 @@ a {
 
 .mini-btn:hover {
   background: #fff !important;
+}
+
+/* ==========================================================================
+   Editor
+   ========================================================================== */
+
+.ed-custom-sets {
+  width: 100%;
+}
+
+.ed-custom-sets li {
+  font-size: 90%;
+  margin-bottom: 5px;
+  display: flex;
+}
+
+.ed-text {
+  width: 50%;
+  text-align: right;
+}
+
+.ed-nav {
+  width: 50%;
+  text-align: left;
 }
 
 /* ==========================================================================
@@ -518,7 +543,7 @@ a {
     font-size: 80%;
   }
 
-  .nav-text {
+  .mobile-text {
     display: none;
   }
 
@@ -689,4 +714,52 @@ a {
   .membersList {
     padding: 2px;
   }
+}
+
+/* ==========================================================================
+Helper classes
+========================================================================== */
+
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
 }

@@ -21,21 +21,21 @@
     <div class="container">
         <div class="row header">
             <ul class="menu">
-                <li class="menu-item" data-bind="click: createSet"><span class="icon-edit"></span><span class="menu-text"> Create</span></li>
+                <li class="menu-item" data-bind="click: createSet"><span class="icon-paint"></span><span class="menu-text"> Create</span></li>
+                <li class="menu-item" data-bind="click: editSets"><span class="icon-edit"></span><span class="menu-text"> Edit Sets</span></li>
                 <li class="menu-item" data-bind="click: saveSet"><span class="icon-save"></span><span class="menu-text"> Save</span></li>
                 <li class="menu-item" data-bind="click: toggleSets"><span class="icon-sets"></span><span class="menu-text"> Presets</span></li>
             </ul>
         </div>
         <div class="row row-set" data-bind="visible: displaySets">
             <ul class="sets" data-bind="foreach: availableSets">
-                <li class="set-tab" data-bind="click: $parent.selectSet"><span data-bind="text: name"></span> [<span data-bind="text: members.length"></span>]</li>
-                
+                <li class="set-tab" data-bind="click: $parent.selectSet"><span data-bind="text: name"></span> [<span data-bind="text: members.length"></span>]</li>         
             </ul>
         </div>
 
         <div class="row">
             <div class="creator" data-bind="visible: displaySetCreator">
-                <h2>Custom Set</h2>
+                <h2>Custom Sets</h2>
                 <input class="creator-textfield" type="text" name="setname" placeholder="Define Set Name" maxlength="15" data-bind="textInput: setName">
                 <hr>
                 <input class="creator-textfield" type="text" name="membername" placeholder="Add Member Name" maxlength="10" data-bind="textInput: memberName">
@@ -56,11 +56,23 @@
         </div>
 
         <div class="row">
+            <div class="editor" data-bind="visible: displaySetEditor">
+                <h2>Custom Sets List</h2>
+                <ul class="ed-custom-sets" data-bind="foreach: loadedBands">
+                    <li class="clearfix">
+                    <div class="ed-text"><span class="ed-band-name" data-bind="text: $data.name"></span> (<span data-bind="text: $data.members.length"></span> members) </div><div class="ed-nav"><button class="btn" type="button" data-bind="click: $parent.editCustomBand"><span class="icon-paint"><span class="mobile-text"> Edit</span></button><button class="btn" type="button" data-bind="click: $parent.deleteCustomBand"><span class="icon-trash"></span><span class="mobile-text"> Delete</span></button></div></li>
+                </ul>
+                <hr>
+                <button class="btn" type="button" data-bind="click: closeEdit">Close Edit</button>
+            </div>    
+        </div>
+
+        <div class="row">
             <div class="nav">
-                <button class="btn" type="button" data-bind="click: reset"><span class="icon-refresh"></span> <span class="nav-text">Reset</span></button>
-                <button class="btn" type="button" data-bind="click: removeLast"><span class="icon-trash"></span> <span class="nav-text">Remove Last</span></button>
-                <button class="btn" type="button" id="decrease" data-bind="click: toggleDecrease"><span class="icon-remove"></span> <span class="nav-text">Decrease</span></button>
-                <button class="btn" type="button" data-bind="click: finishDistribution"><span class="icon-complete"></span> <span class="nav-text">Finish</span></button>
+                <button class="btn" type="button" data-bind="click: reset"><span class="icon-refresh"></span> <span class="mobile-text">Reset</span></button>
+                <button class="btn" type="button" data-bind="click: removeLast"><span class="icon-trash"></span> <span class="mobile-text">Remove Last</span></button>
+                <button class="btn" type="button" id="decrease" data-bind="click: toggleDecrease"><span class="icon-remove"></span> <span class="mobile-text">Decrease</span></button>
+                <button class="btn" type="button" data-bind="click: finishDistribution"><span class="icon-complete"></span> <span class="mobile-text">Finish</span></button>
             </div>
         <div class="row">
             <h3 id="who" data-bind="text: currentSinger"></h3>
