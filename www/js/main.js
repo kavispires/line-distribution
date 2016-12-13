@@ -43,7 +43,7 @@ var Result = function(data){
     this.rank = ko.observable(0);
     this.finalpercentage = ko.observable(0);
     this.relativePercentage = ko.observable(0); // relative to the longest member
-}
+};
 
 var Template = function(index, name, members, colors){
     this.index = index;
@@ -133,14 +133,14 @@ var ViewModel = function() {
             console.log('Loading LocalStorage...');
             var localData = window.localStorage.getItem('linedistribution');
             // Stop code if no localStorage was previously saved.
-            if (localData == null) {
+            if (localData === null) {
                 console.log('Nothing to load.');
                 return;
             }
             var index, index1, index2;
             var loadMembers = function(newBand) {
                 // If localData Code for band '&b&' is not the first thing in string and it has a member '&m&'
-                if (localData.indexOf('&b&') != 0 && localData.indexOf('&m&') != -1) {
+                if (localData.indexOf('&b&') !== 0 && localData.indexOf('&m&') != -1) {
                     // Remove '&m&'
                     localData = localData.substring(3, localData.length);
                     // Push member to members
@@ -169,7 +169,7 @@ var ViewModel = function() {
                 } else {
                     console.log('Members have been loaded.');
                 }
-            }
+            };
 
             var loadBand = function() {
                 // If localData Code for band '&b&'
@@ -183,13 +183,13 @@ var ViewModel = function() {
                     /// Search for next && and return index
                     index = localData.indexOf('&m&');
                     /// Add bandName and remove it from string
-                    newBand['name'] = localData.substring(0, index);
+                    newBand.name = localData.substring(0, index);
                     localData = localData.substring(index, localData.length);
                     console.log('Band Name:', newBand.name);
                     //console.log(localData);
                     // Create members and colors arrays
-                    newBand['members'] = [];
-                    newBand['colors'] = [];
+                    newBand.members = [];
+                    newBand.colors = [];
                     // Run loadMembers
                     loadMembers(newBand);
 
@@ -201,7 +201,7 @@ var ViewModel = function() {
                     self.appCanBeInitiated = true;
                     console.log('Loading LocalStorage complete.');
                 }
-            }
+            };
             // Run loadBand for the first time
             loadBand();
         } else {
@@ -222,7 +222,7 @@ var ViewModel = function() {
     };
 
     this.saveSet = function() {
-        if (self.customBands().length == 0) {
+        if (self.customBands().length === 0) {
             alert("Nothing to save. Create a custom Band before saving it.");
             return;
         }
@@ -233,7 +233,7 @@ var ViewModel = function() {
         var savefile = '';
         var i, j;
         // Get previously linedistribution saved file, if any
-        if (loadData != null && loadData != undefined) savefile = loadData;
+        if (loadData !== null && loadData !== undefined) savefile = loadData;
         // Save items
         for (i = 0; i < band.length; i++) {
             // Add Band Name          
@@ -263,18 +263,19 @@ var ViewModel = function() {
     this.populateAvailableSets = function() {
         // Clear availableSets();
         self.availableSets([]);
+        var i;
         // Iterate through DATABASE
-        for(var i = 0; i < DATABASE.length; i++){
+        for(i = 0; i < DATABASE.length; i++){
             // Push temp to availableSets
             self.availableSets.push(DATABASE[i]);
         }
         // Iterate through loadedBands
-        for(var i = 0; i < self.loadedBands().length; i++){
+        for(i = 0; i < self.loadedBands().length; i++){
             // Push temp to availableSets
             self.availableSets.push(self.loadedBands()[i]);
         }
 
-        for(var i = 0; i < self.customBands().length; i++){
+        for(i = 0; i < self.customBands().length; i++){
             // Push temp to availableSets
             self.availableSets.push(self.customBands()[i]);
         }
@@ -431,7 +432,7 @@ var ViewModel = function() {
     this.toggleDecrease = function() {
         $('#decrease').toggleClass('on');
         self.decrease(!self.decrease());
-    }
+    };
 
     this.updateProgressBar = function() {
         // Calculate totals
@@ -571,17 +572,17 @@ var ViewModel = function() {
         self.displayResults(false);
         // Unfinish
         self.finish(false);
-    }
+    };
 
     // Fix 2 decimal only total
     this.fixDecimals = function(num, decimals) {
-        if(decimals == undefined) decimals = 2;
+        if(decimals === undefined) decimals = 2;
         return Number(num.toFixed(decimals));
     };
 
     this.getData = function(i) {
         return self.currentBand()[i];
-    }
+    };
 
     /*  --------------
     KEYPRESS 
@@ -590,7 +591,7 @@ var ViewModel = function() {
     this.permission = true;
 
     $(window).on('keydown', function(e){
-        if (event.repeat != undefined) {
+        if (event.repeat !== undefined) {
             self.permission = !event.repeat;
         }
         if (!self.permission) return;
@@ -628,25 +629,26 @@ var ViewModel = function() {
     this.numberOfCustomMembers = ko.observable(0);
 
     this.addColorToColorPickerPalette = function(){
+        var i;
         self.colorPickerPalette([]);
-        for(var i = 0; i < model.COLORS.length; i++) {
+        for(i = 0; i < model.COLORS.length; i++) {
             self.colorPickerPalette.push(model.COLORS[i]);
             self.availableColors.push(model.COLORS[i]);
         }
         // All Colors to color picker
-        for(var i = 0; i < self.colorPickerPalette().length; i++){
+        for(i = 0; i < self.colorPickerPalette().length; i++){
             // Add index classes
             var classes = 'colorpickerbox picker' + i + ' ' + self.colorPickerPalette()[i]; // e.g.: colorpickerbox picker1 red
             $('#picker' + i).removeClass().addClass(classes);
         }
-    }
+    };
 
     this.selectCustomColor = function(data) {
         self.memberColor(data);
         $('.colorpickerbox').removeClass('color-selected');
         var index = model.COLORS.indexOf(data);
         $('.picker' + index).addClass('color-selected');
-    }
+    };
 
     this.addCustomMember = function(data) {
         if(self.customMembers().length === 15) {
@@ -679,7 +681,7 @@ var ViewModel = function() {
         $('.colorpickerbox').removeClass('color-selected');
         // update color picker boxes
         self.colorPickerPalette.valueHasMutated();
-    }
+    };
 
     this.customMembers.subscribe(function(){
         self.numberOfCustomMembers(self.customMembers().length);
@@ -695,7 +697,7 @@ var ViewModel = function() {
         self.availableColors.splice(thisColor, 0, data.color());
         // Remove member
         self.customMembers.splice(data.index, 1);
-    }
+    };
 
     this.confirmSet = function() {
         // If there's no name
@@ -704,7 +706,7 @@ var ViewModel = function() {
             return;
         }
         // If there's no members
-        if(self.customMembers().length == 0) {
+        if(self.customMembers().length === 0) {
             alert("You need at least one member in the set");
             return;
         }
@@ -725,14 +727,14 @@ var ViewModel = function() {
         self.selectSet(self.availableSets[self.availableSets().length - 1]);
         // Hide creator
         self.displaySetCreator(false);
-    }
+    };
 
     /*  --------------
     CALL INIT()
     -------------- */
 
     self.init();
-}
+};
 
 // Apply Bindings to View
 $(document).ready(function(){
