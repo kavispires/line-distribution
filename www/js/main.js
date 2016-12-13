@@ -87,6 +87,7 @@ var ViewModel = function() {
     this.log = ko.observableArray([]);
     this.totalPercentage = ko.observable(0);
 
+    this.displayCoreApplication = ko.observable(true);
     this.displayResults = ko.observable(false);
     this.resultsArray = ko.observableArray([]);
 
@@ -291,6 +292,9 @@ var ViewModel = function() {
         self.customBands([]);
         // Unallow Save
         self.changesToBeSaved(false);
+        // Repopulate available sets
+        self.populateAvailableSets();
+        // Alert
         self.alert('alert', 'Save complete!');
     };
 
@@ -325,6 +329,8 @@ var ViewModel = function() {
     this.selectSet = function(data) {
         // Toggle windows
         self.toggleWindow('displayMain');
+        // Display coreApplication
+        self.displayCoreApplication(true);
         // Update currentSet
         self.currentSet(data);
         // Reset app
@@ -604,15 +610,18 @@ var ViewModel = function() {
             }
             // Show Modal
             self.displayResults(true);
+            self.displayCoreApplication(false);
         } else {
             // Hide Modal
             self.displayResults(false);
+            self.displayCoreApplication(true);
         }
     };
 
     this.closeResults = function() {
         // Hide Modal
         self.displayResults(false);
+        self.displayCoreApplication(true);
         // Unfinish
         self.finish(false);
     };

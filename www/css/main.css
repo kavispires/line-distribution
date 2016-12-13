@@ -128,6 +128,10 @@ body {
   align-items: flex-start;
 }
 
+.only-mobile {
+  display: none;
+}
+
 a {
   color: #333;
   text-decoration: none;
@@ -190,11 +194,21 @@ a {
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+}
 
+.main-title {
+  width: 100%;
 }
 
 .main h2 {
   margin-bottom: 0;
+  text-align: center;
+}
+
+.main-child {
+  width: 100%;
 }
 
 .nav {
@@ -348,17 +362,16 @@ a {
    ========================================================================== */
 
 .results {
-  position: absolute;
+
   width: 96%;
-  top: 20vh;
-  left: 2vw;
-  right: 2vw;
+  margin: 0 auto;
   background: #fff;
   padding: 10px;
   border-radius: 5px;
   min-height: 65vh;
   -webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,.5);
   box-shadow: inset 0 1px 3px rgba(0,0,0,.5);
+  overflow-y: auto;
 }
 
 .result {
@@ -594,6 +607,14 @@ a {
     overflow-y: scroll;
   }
 
+  .only-mobile {
+    display: inline-block;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
   .home {
     justify-content: flex-start;
   }
@@ -607,8 +628,13 @@ a {
     font-size: 80%;
   }
 
-  .mobile-text {
-    display: none;
+  .btn-lg-mobile {
+    width: 40%;
+  }
+
+  .main h2 {
+    font-size: 90%;
+    margin-top: 5px;
   }
 
   h3 {
@@ -648,13 +674,13 @@ a {
 
   .box-xs {
     width: 30%;
-    line-height: 3.5vh;
+    line-height: 3vh;
   }
 
   .results {
     width: 92vw;
     font-size: .75em;
-    top: 23vh;
+    top: 22vh;
     min-height: 70vh;
     left: 4vw;
     right: 3vw;
