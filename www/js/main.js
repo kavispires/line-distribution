@@ -161,6 +161,10 @@ var ViewModel = function() {
     };
 
     this.saveSet = function() {
+        if (self.customBands().length == 0) {
+            alert("Nothing to save. Create a custom Band before saving it.");
+            return;
+        }
         console.log('Saving Sets...');
         // Gather self.customBands
         var band = self.customBands();
