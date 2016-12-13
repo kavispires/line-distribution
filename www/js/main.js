@@ -550,6 +550,7 @@ var ViewModel = function() {
 
     this.displaySetCreator = ko.observable(false);
     this.colorPickerPalette = ko.observableArray();
+    this.availableColors = [];
     this.customMembers = ko.observableArray([]);
     this.setName = ko.observable();
     this.memberName = ko.observable();
@@ -560,7 +561,8 @@ var ViewModel = function() {
     this.addColorToColorPickerPalette = function(){
         self.colorPickerPalette([]);
         for(var i = 0; i < model.COLORS.length; i++) {
-            this.colorPickerPalette.push(model.COLORS[i]);
+            self.colorPickerPalette.push(model.COLORS[i]);
+            self.availableColors.push(model.COLORS[i]);
         }
         // All Colors to color picker
         for(var i = 0; i < self.colorPickerPalette().length; i++){
@@ -568,6 +570,7 @@ var ViewModel = function() {
             var classes = 'colorpickerbox picker' + i + ' ' + self.colorPickerPalette()[i]; // e.g.: colorpickerbox picker1 red
             $('#picker' + i).removeClass().addClass(classes);
         }
+        console.log(self.availableColors);
     }
 
     this.selectCustomColor = function(data) {
@@ -589,12 +592,16 @@ var ViewModel = function() {
         }
         // If missing Color, select random color
         if(!self.memberColor()) {
-            var color = self.colorPickerPalette()[self.customMembers().length];
+            var color = self.availableColors[0];
             self.memberColor(color);
         }
-        // Remove Color from options
+        // Hide Color from palette
         var colorToHide = self.colorPickerPalette().indexOf(self.memberColor());
         $('.picker' + colorToHide).hide();
+        // Remove Color from available
+        console.log(self.availableColors.indexOf(self.memberColor()));
+        self.availableColors.splice(self.availableColors.indexOf(self.memberColor()), 1);
+
         // Add Member to customMembers
         var index = self.customMembers().length;
         //Member = function(name, color, index, keycode, keyface);
@@ -612,14 +619,15 @@ var ViewModel = function() {
     });
 
     this.removeCustomMember = function(data) {
-        self.customMembers.splice(data.index, 1);
-        //TO-DO: Add color back to colorPickerPallete
-        console.log(data);
-        //self.colorPickerPalette.push(color);
+        // TO-DO: Colors are not removed correctly when buttons are not clicked in order, from left to right
+        // Get color index
+        var thisColor = self.colorPickerPalette().indexOf(data.color());  
         // Update colorPickerPalette
-        var colorToShow = self.colorPickerPalette().indexOf(data.color());
-        console.log(colorToShow);
-        $('.picker' + colorToShow).show();
+        $('.picker' + thisColor).show();
+        // Update available colors
+        self.availableColors.splice(thisColor, 0, data.color());
+        // Remove member
+        self.customMembers.splice(data.index, 1);
     }
 
     this.confirmSet = function() {
