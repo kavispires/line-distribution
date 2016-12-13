@@ -69,7 +69,9 @@ var ViewModel = function() {
         -------------- */
 
     this.appCanBeInitiated = false;
-
+    
+    this.displayIndex = ko.observable(true);
+    this.displayMain = ko.observable(false);
     this.displaySets = ko.observable(false);
     this.availableSets = ko.observableArray([]);
     this.currentSet = ko.observable();
@@ -212,6 +214,20 @@ var ViewModel = function() {
         }
     };
 
+    this.toggleWindow = function(active) {
+        console.log(active);
+        // Hide Sets
+        self.displaySets(false);
+        // Show only active
+        active == 'displayMain' ? self.displayMain(true) : self.displayMain(false);
+        active == 'displaySetCreator' ? self.displaySetCreator(true) : self.displaySetCreator(false);
+        active == 'displaySetEditor' ? self.displaySetEditor(true) : self.displaySetEditor(false);
+        active == 'displayIndex' ? self.displayIndex(true) : self.displayIndex(false);
+        // TO-DO: Hide Modals
+
+        if(active == undefined) self.displayIndex(true);
+    }
+
     /*  --------------
         TOP MENU FUNCTIONS 
         -------------- */
@@ -221,9 +237,8 @@ var ViewModel = function() {
         self.setName('');
         self.customMembers([]);
         self.addColorToColorPickerPalette();
-        self.displaySetCreator(!self.displaySetCreator());
-        self.displaySetEditor(false);
-        self.displaySets(false);
+        // Toggle windows
+        self.toggleWindow('displaySetCreator');
     };
 
     this.editSets = function() {
@@ -232,9 +247,8 @@ var ViewModel = function() {
             var confirmEdit = confirm("Sets will be saved before continuing.");
         }
         if (confirmEdit) self.saveSet();
-        self.displaySetEditor(!self.displaySetEditor());
-        self.displaySetCreator(false);
-        self.displaySets(false);
+        // Toggle windows
+        self.toggleWindow('displaySetEditor');
     }
 
     this.saveSet = function() {
@@ -281,8 +295,6 @@ var ViewModel = function() {
     // Shows/Hides Set Menu
     this.toggleSets = function() {
         self.displaySets(!self.displaySets());
-        self.displaySetCreator(false);
-        self.displaySetEditor(false);
     };
 
     // Populate availableSets() with database and localStorage
@@ -308,8 +320,8 @@ var ViewModel = function() {
     };
 
     this.selectSet = function(data) {
-        // Hide Set Menu
-        self.displaySets(false);
+        // Toggle windows
+        self.toggleWindow('displayMain');
         // Update currentSet
         self.currentSet(data);
         // Reset app

@@ -6,7 +6,7 @@
     <meta id="msapplication-tap-highlight" content="no" />
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
-    <title>Line Distribuition</title>
+    <title>Line Distribution</title>
 
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" href="css/normalize.min.css">
@@ -67,29 +67,29 @@
             </div>    
         </div>
 
-        <div class="row">
+        <div class="row main" data-bind="visible: displayMain">
             <div class="nav">
                 <button class="btn" type="button" data-bind="click: reset"><span class="icon-refresh"></span> <span class="mobile-text">Reset</span></button>
                 <button class="btn" type="button" data-bind="click: removeLast"><span class="icon-trash"></span> <span class="mobile-text">Remove Last</span></button>
                 <button class="btn" type="button" id="decrease" data-bind="click: toggleDecrease"><span class="icon-remove"></span> <span class="mobile-text">Decrease</span></button>
                 <button class="btn" type="button" data-bind="click: finishDistribution"><span class="icon-complete"></span> <span class="mobile-text">Finish</span></button>
             </div>
-        <div class="row">
+
             <h3 id="who" data-bind="text: currentSinger"></h3>
             <div class="progress" data-bind="foreach: currentBand">
                 <div class="bar" data-bind="attr: {'class': 'bar' + index}"></div>
             </div>
-        </div>
-        </div>
-        <div class="row flex-container boxes" data-bind="foreach: currentBand">
-            <div class="box" data-bind="event: { mousedown: $parent.recordStart, mouseup: $parent.recordStop }, attr: {'class': 'box' + index}">
-                <span class="box-key" data-bind="text: keyface"></span><br>
-                <span class="box-name" data-bind="text: name"></span><br>
-                <span class="timestamp" data-bind="text: total"></span>
-            </div>
-        </div>
 
-        <div class="row">
+            <div class="flex-container boxes" data-bind="foreach: currentBand">
+                <div class="box" data-bind="event: { mousedown: $parent.recordStart, mouseup: $parent.recordStop }, attr: {'class': 'box' + index}">
+                    <span class="box-key" data-bind="text: keyface"></span><br>
+                    <span class="box-name" data-bind="text: name"></span><br>
+                    <span class="timestamp" data-bind="text: total"></span>
+                </div>
+            </div>
+            <div class="log" data-bind="foreach: log">
+                <span data-bind="text: $data + ' | '"></span>
+            </div>
             <div class="results" data-bind="visible: displayResults">
                 <h3>Results</h3>
                 <!--ko foreach: resultsArray-->
@@ -100,12 +100,12 @@
                 <!--/ko-->
                 <button class="btn" type="button" data-bind="click: closeResults">Close</button>
             </div>
-        </div>
+        </div><!-- /row -->
 
-        <div class="log" data-bind="foreach: log">
-            <span data-bind="text: $data + ' | '"></span>
+        <div class="row" data-bind="visible: displayIndex">
+            <h1>Line Distribution</h1>
         </div>
-    </div>
+    </div><!-- /container -->
 
     <script src="js/vendor/jquery-2.1.4.min.js"></script>
     <script src="js/vendor/jquery.mobile-1.4.5.min.js"></script>
