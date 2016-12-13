@@ -68,6 +68,8 @@ var ViewModel = function() {
         OBSERVABLES
         -------------- */
 
+    this.appCanBeInitiated = false;
+
     this.displaySets = ko.observable(false);
     this.availableSets = ko.observableArray([]);
     this.currentSet = ko.observable();
@@ -128,25 +130,85 @@ var ViewModel = function() {
 
     this.loadLocalStorage = function() {
         if (typeof(Storage) !== 'undefined') {
-            var localData = window.localStorage;
+            console.log('Loading LocalStorage...');
+            var localData = window.localStorage.getItem('linedistribution');
+            if (localData == null) return;
+            var index, index1, index2, index3;
             console.log(localData);
-            var parsedData = []
-            for(var i = 0; i < localData.length; i++) {
-                parsedData.push(localData.getItem("key"));
+            var loadMembers = function(newBand) {
+                // If localData Code for band '&b&' is not the first thing in string and it has a member '&m&'
+                if (localData.indexOf('&b&') != 0 && localData.indexOf('&m&') != -1) {
+                    console.log(localData);
+                    // Remove '&m&'
+                    localData = localData.substring(3, localData.length);
+                    // Push member to members
+                    index = localData.indexOf('&c&');
+                    newBand.members.push(localData.substring(0, index));
+                    localData = localData.substring(index, localData.length);
+                    // Remove '&c&'
+                    localData = localData.substring(3, localData.length);
+                    // Find index of next element
+                    index1 = localData.indexOf('&m&');
+                    index2 = localData.indexOf('&b&');
+                    console.log('INDEXES:', index1, '&', index2);
+                    if (index1 != -1 && index2 != -1 && index1 < index2) {
+                        index = index1;
+                    } else if (index1 != -1 && index2 != -1 && index1 > index2) {
+                        index = index2;
+                    } else if (index1 != -1 && index2 == -1) {
+                        index = index1;
+                    } else {
+                        index = localData.length;
+                    }
+                    console.log('FINAL INDEX', index);
+                    newBand.colors.push(localData.substring(0, index));
+                    localData = localData.substring(index, localData.length);
+                    console.log('Member:', newBand.members[newBand.members.length - 1], '(', newBand.colors[newBand.colors.length - 1],')');
+                    // Run loadMembers again
+                    console.log('E vai?', localData.indexOf('&b&'));
+                    loadMembers(newBand);
+                } else {
+                    console.log('Members have been loaded.');
+                }
             }
-            console.log(parsedData);
-                //var cityNumber, locationNumber;
-                //for(var i = 0; i < localData.length - 1; i++) {
-                    //cityNumber = Number(localData.key(i)[0]);
-                    //locationNumber = Number(localData.key(i)[1]);
-                //}
+
+            var loadBand = function() {
+                // If localData Code for band '&b&'
+                if (localData.indexOf('&b&') != -1) {
+                    console.log('=== NEW BAND ===');
+                    // Create empty band object
+                    var newBand = {};
+                    // Band Name
+                    /// Remove '&b&'
+                    localData = localData.substring(3, localData.length);
+                    /// Search for next && and return index
+                    index = localData.indexOf('&m&');
+                    /// Add bandName and remove it from string
+                    newBand['name'] = localData.substring(0, index);
+                    localData = localData.substring(index, localData.length);
+                    console.log('Band Name:', newBand.name);
+                    //console.log(localData);
+                    // Create members and colors arrays
+                    newBand['members'] = [];
+                    newBand['colors'] = [];
+                    // Run loadMembers
+                    loadMembers(newBand);
+
+                    // Add band to self.loadedBands
+                    self.loadedBands.push(newBand);
+                    // Run loadBand again
+                    loadBand();
+                } else {
+                    self.appCanBeInitiated = true;
+                    console.log('Loading LocalStorage complete.');
+                }
+            }
+            // Run loadBand for the first time
+            loadBand();
         } else {
             alert('No browser Web Storage support. No data will be saved.');
         }
-
     };
-
-    //window.localStorage.clear();
 
     /*  --------------
         TOP MENU FUNCTIONS 
@@ -168,23 +230,28 @@ var ViewModel = function() {
         console.log('Saving Sets...');
         // Gather self.customBands
         var band = self.customBands();
-        var i, j, savefile;
-        console.log(band);
+        var loadData = window.localStorage.getItem('linedistribution');
+        var savefile = '';
+        var i, j;
+        // Get previously linedistribution saved file, if any
+        if (loadData != null && loadData != undefined) savefile = loadData;
         // Save items
         for (i = 0; i < band.length; i++) {
             // Add Band Name          
-            savefile = '&&' + band[i].name;
+            savefile += '&b&' + band[i].name;
             // For each item in the band
             for (j = 0; j < band[i].members.length; j++) {
-                savefile += '&&' + band[i].members[j];
-                savefile += '&&' + band[i].colors[j];
-            }
-            // Save string '&&name&&member&&color&&member&&color...'
-            window.localStorage.setItem('linedistribution', savefile);
-            console.log(savefile);
+                savefile += '&m&' + band[i].members[j];
+                savefile += '&c&' + band[i].colors[j];
+            }     
         }
-        // TO-DO: Rerun loadSets
-        // TO-DO: Clear custom bands
+        // Save string '&&name&&member&&color&&member&&color...'
+        window.localStorage.setItem('linedistribution', savefile);
+        console.log(savefile);
+        // Rerun loadSets
+        self.loadLocalStorage();
+        // Clear custom bands
+        self.customBands([]);
     };
 
     // Shows/Hides Set Menu
@@ -202,7 +269,11 @@ var ViewModel = function() {
             // Push temp to availableSets
             self.availableSets.push(DATABASE[i]);
         }
-        // TODO: Load localStorage
+        // Iterate through loadedBands
+        for(var i = 0; i < self.loadedBands().length; i++){
+            // Push temp to availableSets
+            self.availableSets.push(self.loadedBands()[i]);
+        }
 
         for(var i = 0; i < self.customBands().length; i++){
             // Push temp to availableSets
